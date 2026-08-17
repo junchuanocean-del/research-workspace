@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html data-page-node-id="7PplyYA3mQN9RpqdD69klT" lang="zh-CN">
+<head data-page-node-id="9c5XLuybDMjOzhhqC9z02L">
+<script data-page-node-id="2GOVUKkpDVnG2MH0eYesd5" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="GGnwr9mAbfE0fHrY0DfkSG" charset="UTF-8">
+<meta data-page-node-id="7PJt5WYpBWkU3NFftxTmkj" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+<title data-page-node-id="3inhqlwKbcVpzmzZ6jljbM" data-pnid-children="QzzL5YNZngqEKDugBcETNN">科研工作台 · Researcher's Workspace</title>
+<style data-page-node-id="bubhMYJBAY7A2NwkNZZKzR" data-pnid-children="yqmEe7conVoYUqWTllpGA3">
+:root{--teal:#0d9488;--teal-l:#14b8a6;--teal-d:#0f766e;--blue:#3b82f6;--blue-l:#60a5fa;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--red:#ef4444;--red-bg:#fef2f2;--green:#22c55e;--amber:#f59e0b;--amber-bg:#fffbeb;--purple:#8b5cf6;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 4px 12px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.app{display:flex;height:100vh}
+.sidebar{width:240px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s;z-index:100}
+.sidebar-brand{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-brand svg{width:28px;height:28px;flex-shrink:0}
+.sidebar-brand span{font-weight:700;font-size:16px;color:var(--teal-d)}
+.nav-list{flex:1;overflow-y:auto;padding:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap;font-size:14px;margin-bottom:2px}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--teal);color:#fff;font-weight:600}
+.nav-item svg{width:20px;height:20px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:11px;padding:1px 7px;border-radius:10px;font-weight:600}
+.nav-item.active .nav-badge{background:rgba(255,255,255,.3)}
+.nav-timer-dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+.sidebar-footer button{flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--card);cursor:pointer;font-size:12px;color:var(--muted);transition:all .15s;min-width:0}
+.sidebar-footer button:hover{border-color:var(--teal);color:var(--teal)}
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;height:52px;background:var(--card);border-bottom:1px solid var(--border);z-index:90;align-items:center;padding:0 12px;gap:10px}
+.hamburger{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.hamburger:hover{background:var(--bg)}
+.hamburger svg{width:24px;height:24px;color:var(--text)}
+.mobile-title{font-weight:700;font-size:15px;color:var(--teal-d)}
+.sync-badge{margin-left:auto;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.header-banner{width:100%;height:110px;flex-shrink:0}
+.content{padding:16px 20px;max-width:1100px;width:100%;margin:0 auto;flex:1}
+.urgent{background:linear-gradient(135deg,#fef2f2,#fff5f5);border:1px solid #fecaca;border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.urgent-title{font-size:15px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.urgent-title svg{width:18px;height:18px}
+.urgent-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--red)}
+.urgent-item-info{flex:1;min-width:0}
+.urgent-item-title{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.urgent-item-meta{font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;margin-top:2px}
+.urgent-item-actions{display:flex;gap:6px;flex-shrink:0}
+.view{display:none}.view.active{display:block}
+.view-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.view-title{font-size:20px;font-weight:700;color:var(--text)}
+.view-subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.stat-value{font-size:28px;font-weight:800;color:var(--teal)}
+.stat-card.danger .stat-value{color:var(--red)}
+.stat-card.success .stat-value{color:var(--green)}
+.stat-card.blue .stat-value{color:var(--blue)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:2px}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end}
+.form-group{display:flex;flex-direction:column;gap:4px}
+input[type=text],input[type=date],input[type=number],select,textarea{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;background:var(--card);color:var(--text);transition:border .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+textarea{resize:vertical;min-height:60px}
+input[type=text],input[type=date],input[type=number]{min-height:40px}
+select{min-height:40px;cursor:pointer}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;min-height:40px}
+.btn-primary{background:var(--teal);color:#fff}.btn-primary:hover{background:var(--teal-d)}
+.btn-sm{padding:5px 10px;min-height:30px;font-size:12px;border-radius:6px}
+.btn-outline{background:var(--card);border:1px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{opacity:.9}
+.btn-ghost{background:transparent;color:var(--muted);padding:4px 8px;min-height:auto;font-size:12px}.btn-ghost:hover{color:var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.badge-p0{background:#fee2e2;color:#dc2626}.badge-p1{background:#fef3c7;color:#d97706}.badge-p2{background:#dbeafe;color:#2563eb}
+.badge-done{background:#dcfce7;color:#16a34a}.badge-overdue{background:#fee2e2;color:#dc2626}
+.badge-tag{background:#f0fdfa;color:var(--teal-d);cursor:pointer}
+.badge-status{padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.badge-active{background:#dbeafe;color:#2563eb}.badge-paused{background:#fef3c7;color:#d97706}
+.todo-item{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;transition:all .15s}
+.todo-item:hover{box-shadow:var(--shadow)}
+.todo-item.overdue{border-left:3px solid var(--red);background:var(--red-bg)}
+.todo-item.done{opacity:.55}.todo-item.done .todo-title{text-decoration:line-through}
+.todo-checkbox{width:20px;height:20px;border:2px solid var(--border);border-radius:6px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px}
+.todo-checkbox.checked{background:var(--green);border-color:var(--green)}
+.todo-checkbox svg{width:14px;height:14px;color:#fff;opacity:0;transition:opacity .15s}
+.todo-checkbox.checked svg{opacity:1}
+.todo-content{flex:1;min-width:0}
+.todo-title{font-weight:600;font-size:14px}
+.todo-meta{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.todo-actions{display:flex;gap:4px;flex-shrink:0;align-items:flex-start}
+.subtask-list{margin-top:6px;padding-left:4px}
+.subtask-item{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:12px;color:var(--muted)}
+.subtask-item .todo-checkbox{width:16px;height:16px;border-width:1.5px;margin-top:0}
+.subtask-item .todo-checkbox svg{width:10px;height:10px}
+.subtask-item.done-text{text-decoration:line-through;opacity:.6}
+.date-group-header{font-size:13px;font-weight:700;color:var(--muted);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.date-group-header:first-child{margin-top:0}.date-group-header.overdue-header{color:var(--red)}
+.idea-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:8px}
+.idea-content{font-size:14px;line-height:1.6;margin-bottom:8px;word-break:break-word}
+.idea-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.idea-priority{display:inline-flex;align-items:center;gap:2px;font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px}
+.idea-priority.high{background:#fee2e2;color:#dc2626}.idea-priority.medium{background:#fef3c7;color:#d97706}.idea-priority.low{background:#f1f5f9;color:var(--muted)}
+.tag-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.project-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.project-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.project-name{font-weight:700;font-size:15px}
+.project-blocker{background:var(--red-bg);border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;color:var(--red)}
+.project-progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:8px 0}
+.project-progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-l));border-radius:4px;transition:width .3s}
+.project-todos{margin-top:10px}
+.project-todo-link{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);padding:4px 0}
+.project-todo-link .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.paper-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.paper-title{font-weight:700;font-size:15px;margin-bottom:4px}
+.paper-meta-row{font-size:12px;color:var(--muted);margin:2px 0}
+.paper-stage-track{display:flex;gap:2px;margin:10px 0;flex-wrap:wrap}
+.paper-stage-dot{flex:1;min-width:55px;text-align:center;font-size:10px;padding:4px 2px;border-radius:4px;background:var(--border);color:var(--muted);transition:all .2s}
+.paper-stage-dot.done{opacity:.5}
+.paper-progress-ring{display:flex;align-items:center;gap:12px}
+.chart-container{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:12px}
+.blocker-list-item{display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--red-bg);border-radius:6px;margin-bottom:6px;font-size:13px}
+.fitness-today{background:linear-gradient(135deg,#f0fdfa,#ecfeff);border:1px solid #ccfbf1;border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.fitness-plan-title{font-weight:700;color:var(--teal-d);font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fitness-exercise{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}
+.fitness-check{width:18px;height:18px;border:2px solid var(--teal);border-radius:4px;cursor:pointer;flex-shrink:0}
+.fitness-check.done{background:var(--teal)}
+.heatmap-grid{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}
+.heatmap-cell{width:14px;height:14px;border-radius:3px;background:var(--border)}
+.heatmap-cell.l1{background:#ccfbf1}.heatmap-cell.l2{background:#5eead4}.heatmap-cell.l3{background:#14b8a6}.heatmap-cell.l4{background:#0f766e}
+.english-card{background:linear-gradient(135deg,#f0fdfa,#fff);border:1px solid #ccfbf1;border-radius:var(--radius);padding:20px;margin-bottom:12px}
+.english-lesson-title{font-weight:700;font-size:17px;color:var(--teal-d);margin-bottom:4px}
+.english-lesson-type{font-size:12px;color:var(--muted);margin-bottom:12px}
+.english-item{padding:10px 0;border-bottom:1px solid var(--border)}.english-item:last-child{border-bottom:none}
+.english-term{font-weight:700;font-size:14px;color:var(--blue);display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.english-phonetic{font-size:13px;font-weight:400;color:var(--teal-d);font-family:Georgia,serif}
+.english-def{font-size:13px;color:var(--text);margin:2px 0}
+.english-example{font-size:12px;color:var(--muted);font-style:italic}
+.english-studied{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--teal);color:#fff;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none}
+.english-studied:hover{background:var(--teal-d)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:var(--radius);padding:24px;max-width:420px;width:100%;box-shadow:var(--shadow-lg)}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:8px}
+.modal-body{font-size:14px;color:var(--muted);margin-bottom:20px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.toast{position:fixed;top:20px;right:20px;background:var(--text);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;z-index:300;opacity:0;transform:translateY(-10px);transition:all .3s;pointer-events:none;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.warning{background:var(--amber)}.toast.error{background:var(--red)}.toast.success{background:var(--green)}
+.reminder-banner{background:var(--amber-bg);border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#92400e;display:flex;align-items:center;gap:8px}
+.reminder-banner button{margin-left:auto}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state p{font-size:14px}
+.section-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.note-box{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);margin-top:8px}
+.lit-item,.exp-item,.meeting-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:8px}
+.lit-title,.exp-title{font-weight:700;font-size:14px}
+.lit-authors{font-size:12px;color:var(--muted)}
+.lit-venue{font-size:11px;color:var(--teal-d);font-style:italic}
+.lit-stars{display:inline-flex;gap:1px;font-size:16px}
+.star{color:#d1d5db;cursor:pointer;user-select:none}.star.star-filled{color:#f59e0b}
+.lit-status{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.lit-status-unread{background:#f1f5f9;color:var(--muted)}.lit-status-reading{background:#dbeafe;color:#2563eb}.lit-status-read{background:#dcfce7;color:#16a34a}
+.lit-notes,.meeting-notes,.exp-detail{background:#f8fafc;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text);margin-top:6px;white-space:pre-wrap}
+.lit-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.exp-badge,.meeting-type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-right:4px}
+.exp-type-experiment{background:#dbeafe;color:#2563eb}.exp-type-simulation{background:#ede9fe;color:var(--purple)}
+.exp-type-survey{background:#fef3c7;color:#d97706}.exp-type-analysis{background:#f0fdfa;color:var(--teal-d)}
+.exp-status-planned{background:#f1f5f9;color:var(--muted)}.exp-status-running{background:#dbeafe;color:#2563eb}
+.exp-status-completed{background:#dcfce7;color:#16a34a}.exp-status-failed{background:#fee2e2;color:#dc2626}
+.mt-group{background:#dbeafe;color:#2563eb}.mt-advisor{background:#f0fdfa;color:var(--teal-d)}
+.mt-collab{background:#fef3c7;color:#d97706}.mt-seminar{background:#ede9fe;color:var(--purple)}.mt-other{background:#f1f5f9;color:var(--muted)}
+.meeting-action{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px}
+.meeting-action .todo-checkbox{width:16px;height:16px;border-width:1.5px;margin-top:0}
+.meeting-action .todo-checkbox svg{width:10px;height:10px}
+.timer-container{text-align:center;padding:20px}
+.timer-controls{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.timer-config{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;text-align:left}
+.timer-stat{text-align:center;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:8px}
+.timer-stat-value{font-size:24px;font-weight:800;color:var(--teal)}
+.timer-stat-label{font-size:11px;color:var(--muted)}
+.reading-queue-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.reading-queue-item:last-child{border-bottom:none}
+.deadline-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}
+.deadline-urgent{color:var(--red);font-weight:600}.deadline-soon{color:var(--amber)}
+@media(max-width:768px){
+  .app{flex-direction:column}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);box-shadow:var(--shadow-lg)}
+  .sidebar.show{transform:translateX(0)}.overlay.show{display:block}
+  .mobile-header{display:flex}.main{padding-top:52px}.content{padding:12px}.header-banner{height:80px}
+  .form-row{flex-direction:column;align-items:stretch}.form-row>*{width:100%}
+  .btn{min-height:44px}.nav-item{padding:12px 14px}
+  .todo-item{flex-wrap:wrap}.todo-actions{width:100%;justify-content:flex-end}
+  .urgent-item{flex-wrap:wrap}.urgent-item-actions{width:100%;justify-content:flex-end}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}.view-title{font-size:18px}
+  .sidebar-footer{flex-direction:column}
+  input[type=text],input[type=date],input[type=number],select,textarea{font-size:16px}
+  .timer-config{grid-template-columns:1fr}
+}
+.eng-cat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.eng-cat-tab{padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;font-family:inherit;white-space:nowrap}
+.eng-cat-tab:hover{border-color:var(--teal);color:var(--teal)}
+.eng-cat-tab.active{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}
+.english-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.english-today{border:2px solid var(--teal);position:relative}
+.english-today-badge{position:absolute;top:-10px;left:16px;background:var(--teal);color:#fff;font-size:11px;font-weight:600;padding:2px 10px;border-radius:10px}
+.eng-cat-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.eng-cat-oceanography{background:#cffafe;color:#0891b2}
+.eng-cat-academic{background:#f0fdfa;color:var(--teal-d)}
+.eng-cat-frontier{background:#ede9fe;color:var(--purple)}
+.eng-cat-news{background:#fef3c7;color:#d97706}
+.eng-cat-listening{background:#dbeafe;color:#2563eb}
+.eng-cat-speaking{background:#fee2e2;color:#dc2626}
+.eng-cat-reading{background:#dcfce7;color:#16a34a}
+.eng-cat-writing{background:#fce7f3;color:#db2777}
+</style>
+</head>
+<body data-page-node-id="7wv8IXwVc92O8EljFi66ed">
+<div data-page-node-id="O74csSutgsQ7IDuRVVb45n" class="app">
+  <div data-page-node-id="zof7v6hxdmTGDrjihXLsw1" class="mobile-header">
+    <button data-page-node-id="p7VxGGK2MC3XB2joU1Ymtu" class="hamburger" onclick="toggleSidebar()"><svg data-page-node-id="scKWO9Nf5Wx8DIQDY3NIyc" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path data-page-node-id="JClMqDJlEuFOtQOvsSzl5s" d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    <span data-page-node-id="ZwjB4AWGPyP1lhRa9gBL5e" class="mobile-title"><!--pnid:JChDQZ4i5s30Nve9qQNjgQ-->科研工作台</span>
+    <span data-page-node-id="i4xlDaV5j5GeXiLlBdC63L" class="sync-badge" onclick="window.CloudSync&&CloudSync.openPanel()" style="cursor:pointer" title="点击打开云同步设置"><span data-page-node-id="btup5y1Vclt4QE5JfKAoK5" class="sync-dot" id="syncDot"></span><span data-page-node-id="Ptj9WLjMlZXKl1WZAHYvlu" id="syncText"><!--pnid:Gl36RwQG3s6cymekYaVKxN-->检测中</span></span>
+  </div>
+  <div data-page-node-id="xkbVVmjeogZ54Ndn8HNYlE" class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+  <aside data-page-node-id="0WzN4pTmBVuKzEVVw7qTM7" class="sidebar" id="sidebar">
+    <div data-page-node-id="e1WwcIDpWNm7V09SInel2p" class="sidebar-brand">
+      <svg data-page-node-id="4hy6VXbCmKM3oTxOuZHjIS" fill="none" stroke="#0d9488" stroke-width="2" viewBox="0 0 24 24"><path data-page-node-id="KXsfEWPzkiJHlcziTWkxlR" d="M9 3v6l-4 6a2 2 0 002 3h10a2 2 0 002-3l-4-6V3M7 3h10M9 18h6"/></svg>
+      <span data-page-node-id="qJcwqRBJb8AYA9kqmqjyVt"><!--pnid:0diOav48r7Ij36d4cDcclV-->科研工作台</span>
+    </div>
+    <nav data-page-node-id="hrUhiZ1t4PGOHJIQxyYXoG" class="nav-list" id="navList"></nav>
+    <div data-page-node-id="G26duvveA1wgumGL7EU1jI" class="sidebar-footer">
+      <button data-page-node-id="bZNI4ivVp6Lc2xFf42YGM5" onclick="exportData()"><!--pnid:pEQqCaQUZznWVSG5GZ11fJ-->导出备份</button>
+      <button data-page-node-id="ffsnTcgEe5XSmm8rNZoFP7" onclick="document.getElementById('importFile').click()"><!--pnid:zQpNt3LKqYeuBlkccE6p8q-->导入恢复</button>
+      <button onclick="window.CloudSync&&CloudSync.openPanel()" style="border-color:var(--teal);color:var(--teal)" title="多平台数据共享">☁️ 云同步</button>
+      <button data-page-node-id="a66wwS2C7e3hHtacGK6VEz" onclick="clearAllData()" style="flex-basis:100%"><!--pnid:mckGd0CLC5y5NDKGEvzK2m-->清空示例/数据</button>
+      <input data-page-node-id="qjrh248prvuZQLGcn1lxsn" accept=".json" id="importFile" onchange="importData(event)" type="file" style="display:none">
+    </div>
+  </aside>
+  <main data-page-node-id="KvLn8B8LxMALZfZ8mApNN0" class="main">
+    <svg data-page-node-id="EcIzzuqMkUAOc5xGP7KJdz" class="header-banner" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 110" xmlns="http://www.w3.org/2000/svg">
+      <defs data-page-node-id="ZbKu5Ve5UGBMBYemQNrSKm"><linearGradient data-page-node-id="AASXylg18ICVxsMUtkFca9" id="hg" x1="0" x2="1" y1="0" y2="0"><stop data-page-node-id="zPKUOb3dMlCcmHxXovascy" offset="0%" stop-color="#0d9488"/><stop data-page-node-id="RS2PcpIejqf5kIb0FIAdD2" offset="60%" stop-color="#0891b2"/><stop data-page-node-id="7UOtyHKWc2ZqmKIGy72cxB" offset="100%" stop-color="#3b82f6"/></linearGradient></defs>
+      <rect data-page-node-id="UHkadiY6L9Yri6BZtbAfe5" fill="url(#hg)" height="110" width="1200"/>
+      <circle data-page-node-id="NePwssJQmPvDDOFNJF4syb" cx="100" cy="55" fill="rgba(255,255,255,0.08)" r="32"/>
+      <circle data-page-node-id="PIjtYHxVSAM68SzGSmrF8m" cx="145" cy="35" fill="rgba(255,255,255,0.06)" r="14"/>
+      <circle data-page-node-id="PlL1hwTR16K5Kt8zBe7ARN" cx="75" cy="80" fill="rgba(255,255,255,0.05)" r="10"/>
+      <path data-page-node-id="Af4YdbhAIVry1KfjVETtcJ" d="M1030 15 Q1060 55 1030 95 M1060 15 Q1030 55 1060 95 M1090 15 Q1120 55 1090 95 M1120 15 Q1090 55 1120 95" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+      <circle data-page-node-id="7lHozEZ797v5lRUQMR66YB" cx="940" cy="55" fill="rgba(255,255,255,0.15)" r="7"/>
+      <text data-page-node-id="JE8VmeKDqmENUhvq2C7DCM" fill="white" font-family="-apple-system,sans-serif" font-size="26" font-weight="700" x="50" y="50"><!--pnid:zwSY8KYI454BOIAkX6jOTr-->科研工作台</text>
+      <text data-page-node-id="37EEOPPBHlnM17BOFkurk6" fill="rgba(255,255,255,0.7)" font-family="-apple-system,sans-serif" font-size="13" x="50" y="78"><!--pnid:ZkzyjNARhFtqSbyhqwfSqr-->Researcher's Digital Workspace</text>
+    </svg>
+    <div data-page-node-id="KrFM8r63JdSuG9gv3tPpF2" class="content" id="content">
+      <section data-page-node-id="neXrWPabcJcvn5597Dijmt" class="urgent" id="urgentSection"></section>
+      <div data-page-node-id="eAJGitYxYgkcrcLNbMxHJk" id="reminderBanner"></div>
+      <section data-page-node-id="8HppYx9P7S1MaQ6DcxYGP0" class="view active" id="view-today"></section>
+      <section data-page-node-id="zj3sy9O6TWJwirNHG8py4M" class="view" id="view-todos"></section>
+      <section data-page-node-id="NAvDKd0nI2hx6c5Lofyw2t" class="view" id="view-literature"></section>
+      <section data-page-node-id="71HCNImxqPm73oRJf38zrX" class="view" id="view-experiments"></section>
+      <section data-page-node-id="UWBcUvSEqFvcvgmWoS62HA" class="view" id="view-ideas"></section>
+      <section data-page-node-id="bSmSBE4RLttxfTO3dx0jbn" class="view" id="view-projects"></section>
+      <section data-page-node-id="pWRs4i51DgUtFtmV03hWyD" class="view" id="view-papers"></section>
+      <section data-page-node-id="4mlLpdi7RXAQBHpXDLGV4Q" class="view" id="view-meetings"></section>
+      <section data-page-node-id="67JjtjdybVPuHH21QhRT7N" class="view" id="view-weekly"></section>
+      <section data-page-node-id="zeIFBhvPYlgpvmBKjZ3rh3" class="view" id="view-timer"></section>
+      <section data-page-node-id="qw5B1yWIMXwQ6lIBxRssjO" class="view" id="view-fitness"></section>
+      <section data-page-node-id="uFJIpbx6FASKdCPpPwalQu" class="view" id="view-english"></section>
+    </div>
+  </main>
+</div>
+<div data-page-node-id="DLi9ZqD1bEKzDSQmpHUNIs" class="modal-overlay" id="modalOverlay"><div data-page-node-id="Odyvtu6slGhDLSDfdo9eCb" class="modal"><div data-page-node-id="bUnKivugHgj25lTbL4D8NY" class="modal-title" id="modalTitle"></div><div data-page-node-id="fGAVMOsaD0316Y7QoKVtEN" class="modal-body" id="modalBody"></div><div data-page-node-id="YNVl8IsNg9CHXoOOhUzosP" class="modal-actions"><button data-page-node-id="eTsdrKMiZWOL0akRZ7eKAP" class="btn btn-outline" onclick="hideModal()"><!--pnid:12NAjdpOFSii8deSidC2Vk-->取消</button><button data-page-node-id="K0weJzfHgl4DzNPtecenWF" class="btn btn-danger" id="modalConfirm"><!--pnid:u9wjtXEL1b9pf4C9jq1oim-->确认</button></div></div></div>
+<div data-page-node-id="167fE0LN0Jm1Ax4d4GjIdP" class="toast" id="toast"></div>
+<script data-page-node-id="d6ezAPZzHyDgsuCHQTTYo9" data-pnid-children="HKKftgqrSuD8fUkx0dPVG5">
+// ===== Constants =====
+const STORAGE_KEY='wb_research_workspace';
+// 今日日期不缓存：统一调用 todayStr() 获取实时日期，避免跨天/页面恢复后日期滞后
+const NAV_ITEMS=[
+  {id:'today',label:'今日总览',icon:'<path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-7H9v7H4a1 1 0 01-1-1V9.5z"/>'},
+  {id:'todos',label:'待办管理',icon:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l3 3 5-6"/>'},
+  {id:'literature',label:'文献管理',icon:'<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>'},
+  {id:'experiments',label:'实验记录',icon:'<path d="M9 2v6l-4 6a2 2 0 002 3h6a2 2 0 002-3l-4-6V2M7 2h10"/>'},
+  {id:'ideas',label:'Idea 速记',icon:'<path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/>'},
+  {id:'projects',label:'项目跟进',icon:'<path d="M3 3v18h18M7 14v4M12 8v10M17 11v7"/>'},
+  {id:'papers',label:'Paper 进度',icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/>'},
+  {id:'meetings',label:'会议记录',icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>'},
+  {id:'weekly',label:'每周复盘',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'},
+  {id:'timer',label:'时间追踪',icon:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M12 1v2"/>'},
+  {id:'fitness',label:'健身打卡',icon:'<path d="M6.5 6.5l11 11M2 9v6M5 5v14M19 5v14M22 9v6"/>'},
+  {id:'english',label:'英语学习',icon:'<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>'}
+];
+const PAPER_STAGES=[
+  {key:'concept',label:'构思',color:'#94a3b8'},
+  {key:'data',label:'数据收集',color:'#0d9488'},
+  {key:'analysis',label:'分析',color:'#0891b2'},
+  {key:'drafting',label:'撰写',color:'#3b82f6'},
+  {key:'revising',label:'修改',color:'#f59e0b'},
+  {key:'submitted',label:'已投稿',color:'#6366f1'},
+  {key:'reviewing',label:'审稿中',color:'#8b5cf6'},
+  {key:'accepted',label:'已录用',color:'#22c55e'},
+  {key:'published',label:'已发表',color:'#16a34a'}
+];
+const ACTIVITY_TYPES=[
+  {value:'research',label:'研究',color:'#0d9488'},
+  {value:'writing',label:'写作',color:'#3b82f6'},
+  {value:'reading',label:'阅读文献',color:'#8b5cf6'},
+  {value:'analysis',label:'数据分析',color:'#f59e0b'},
+  {value:'meeting',label:'会议',color:'#6366f1'},
+  {value:'other',label:'其他',color:'#64748b'}
+];
+const FITNESS_PLAN=[
+  {day:1,title:'上肢力量日',type:'strength',items:['俯卧撑 3组x15次','哑铃划船 3组x12次','平板支撑 3组x30秒','肩部推举 3组x12次'],duration:45,rest:false},
+  {day:2,title:'有氧运动日',type:'cardio',items:['慢跑 30分钟','或 骑行 45分钟','拉伸放松 10分钟'],duration:40,rest:false},
+  {day:3,title:'核心训练日',type:'strength',items:['平板支撑 3组x45秒','仰卧卷腹 3组x20次','俄罗斯转体 3组x20次','登山者 3组x30秒'],duration:35,rest:false},
+  {day:4,title:'休息日',type:'rest',items:['建议完全休息或轻度散步','冥想放松 10分钟','保证充足睡眠'],duration:0,rest:true},
+  {day:5,title:'下肢力量日',type:'strength',items:['深蹲 3组x15次','弓步蹲 3组x12次/侧','臀桥 3组x15次','小腿提踵 3组x20次'],duration:45,rest:false},
+  {day:6,title:'柔韧性训练日',type:'flexibility',items:['瑜伽流 30分钟','全身拉伸 15分钟','泡沫轴放松 10分钟'],duration:55,rest:false},
+  {day:0,title:'休息日',type:'rest',items:['完全休息','或 轻度散步 20分钟','为新一周恢复精力'],duration:0,rest:true}
+];
+const FITNESS_TYPES=[
+  {value:'strength',label:'力量训练',color:'#f59e0b'},
+  {value:'cardio',label:'有氧运动',color:'#3b82f6'},
+  {value:'flexibility',label:'柔韧性',color:'#8b5cf6'},
+  {value:'football',label:'足球',color:'#22c55e'},
+  {value:'rest',label:'休息恢复',color:'#64748b'}
+];
+function fitTypeLabel(t){const f=FITNESS_TYPES.find(x=>x.value===t);return f?f.label:t}
+function fitTypeBadge(t){return t==='strength'?'badge-p1':t==='cardio'?'badge-p2':t==='football'?'badge-done':t==='flexibility'?'badge-tag':'badge-done'}
+function getActiveDays(){return FITNESS_PLAN.filter(d=>!d.rest).length}
+const ENGLISH_CATS=[{"id":"oceanography","label":"物理海洋学"},{"id":"academic","label":"学术写作"},{"id":"frontier","label":"前沿资讯"},{"id":"news","label":"时事新闻"},{"id":"listening","label":"听力训练"},{"id":"speaking","label":"口语表达"},{"id":"reading","label":"阅读理解"},{"id":"writing","label":"写作练习"}];
+const ENGLISH_LESSONS=[{"cat": "oceanography", "title": "洋流与大洋环流", "type": "vocabulary", "items": [{"term": "thermohaline circulation", "phonetic": "ˌθɜːməʊˈheɪlaɪn ˌsɜːkjəˈleɪʃən", "def": "温盐环流", "example": "Thermohaline circulation drives deep ocean currents globally."}, {"term": "subtropical gyre", "phonetic": "sʌbˈtrɒpɪkəl ˈdʒaɪər", "def": "亚热带环流", "example": "The North Atlantic subtropical gyre rotates clockwise."}, {"term": "western boundary current", "phonetic": "ˈwestən ˈbaʊndəri ˈkʌrənt", "def": "西边界流", "example": "The Gulf Stream is a powerful western boundary current."}, {"term": "equatorial upwelling", "phonetic": "ˌekwəˈtɔːriəl ˈʌpwelɪŋ", "def": "赤道上升流", "example": "Equatorial upwelling brings nutrient-rich water to the surface."}, {"term": "Ekman transport", "phonetic": "ˈekmən trænsˈpɔːt", "def": "埃克曼输送", "example": "Ekman transport explains why surface water moves at an angle to the wind."}, {"term": "geostrophic flow", "phonetic": "ˌdʒiːəˈstrɒfɪk fləʊ", "def": "地转流", "example": "Geostrophic flow balances pressure gradient and Coriolis forces."}, {"term": "meridional overturning", "phonetic": "məˈrɪdiənəl ˌəʊvəˈtɜːnɪŋ", "def": "经向翻转环流", "example": "The Atlantic meridional overturning circulation is weakening."}]}, {"cat": "oceanography", "title": "海浪、潮汐与极端波动", "type": "vocabulary", "items": [{"term": "swell", "phonetic": "swel", "def": "涌浪", "example": "A long-period swell arrived from the distant storm."}, {"term": "spring tide", "phonetic": "sprɪŋ taɪd", "def": "大潮", "example": "Spring tides produce the highest high tides and lowest low tides."}, {"term": "neap tide", "phonetic": "niːp taɪd", "def": "小潮", "example": "Neap tides occur during the first and third quarters of the moon."}, {"term": "tsunami", "phonetic": "tsʊˈnɑːmi", "def": "海啸", "example": "The 2011 Japan tsunami devastated coastal communities."}, {"term": "tidal bore", "phonetic": "ˈtaɪdəl bɔːr", "def": "涌潮", "example": "The Qiantang River tidal bore attracts thousands of spectators."}, {"term": "significant wave height", "phonetic": "sɪɡˈnɪfɪkənt weɪv haɪt", "def": "有效波高", "example": "Significant wave height is the mean of the highest one-third of waves."}, {"term": "storm surge", "phonetic": "stɔːm sɜːdʒ", "def": "风暴潮", "example": "Storm surge from Hurricane Katrina inundated New Orleans."}]}, {"cat": "oceanography", "title": "海洋观测平台与仪器", "type": "technique", "items": [{"term": "CTD profiler", "phonetic": "siː tiː diː ˈprəʊfaɪlər", "def": "CTD剖面仪", "example": "The CTD profiler measures conductivity, temperature, and depth."}, {"term": "ADCP", "phonetic": "ˌeɪ diː siː ˈpiː", "def": "声学多普勒流速剖面仪", "example": "We mounted the ADCP on the seabed to record currents."}, {"term": "Argo float", "phonetic": "ˈɑːɡəʊ fləʊt", "def": "Argo浮标", "example": "Each Argo float drifts at 1000 m and profiles every 10 days."}, {"term": "mooring", "phonetic": "ˈmʊərɪŋ", "def": "锚系", "example": "The deep-sea mooring recovered one year of velocity data."}, {"term": "autonomous glider", "phonetic": "ɔːˈtɒnəməs ˈɡlaɪdər", "def": "自主滑翔机", "example": "Autonomous gliders can sample the ocean for months at a time."}, {"term": "satellite altimetry", "phonetic": "ˈsætəlaɪt ælˈtɪmətri", "def": "卫星测高", "example": "Satellite altimetry reveals mesoscale eddy variability."}, {"term": "underway thermosalinograph", "phonetic": "ˌʌndərˈweɪ ˌθɜːməʊˈsælɪnəɡræf", "def": "船载温盐仪", "example": "The thermosalinograph records surface salinity along the ship track."}]}, {"cat": "oceanography", "title": "海气耦合与气候模态", "type": "vocabulary", "items": [{"term": "El Niño-Southern Oscillation", "phonetic": "el ˈniːnjəʊ ˈsʌðən ˌɒsɪˈleɪʃən", "def": "厄尔尼诺-南方涛动", "example": "ENSO strongly influences global precipitation patterns."}, {"term": "Indian Ocean Dipole", "phonetic": "ˈɪndiən ˈəʊʃən ˈdaɪpəʊl", "def": "印度洋偶极子", "example": "A positive Indian Ocean Dipole often brings drought to East Africa."}, {"term": "monsoon onset", "phonetic": "mɒnˈsuːn ˈɒnset", "def": "季风爆发", "example": "Monsoon onset over South China was delayed by two weeks."}, {"term": "Walker circulation", "phonetic": "ˈwɔːkə ˌsɜːkjəˈleɪʃən", "def": "沃克环流", "example": "The Walker circulation weakens during El Niño events."}, {"term": "mixed layer depth", "phonetic": "mɪkst ˈleɪər depθ", "def": "混合层深度", "example": "Mixed layer depth shallows dramatically in summer."}, {"term": "air-sea flux", "phonetic": "eə siː flʌks", "def": "海气通量", "example": "Turbulent air-sea fluxes were measured directly from the research vessel."}]}, {"cat": "oceanography", "title": "海水化学组成", "type": "vocabulary", "items": [{"term": "practical salinity unit", "phonetic": "ˈpræktɪkəl səˈlɪnəti ˈjuːnɪt", "def": "实用盐度单位", "example": "Modern salinity is reported on the practical salinity unit scale."}, {"term": "ocean acidification", "phonetic": "ˈəʊʃən əˌsɪdɪfɪˈkeɪʃən", "def": "海洋酸化", "example": "Ocean acidification threatens coral reef ecosystems."}, {"term": "dissolved oxygen", "phonetic": "dɪˈzɒlvd ˈɒksɪdʒən", "def": "溶解氧", "example": "Dissolved oxygen in the Arabian Sea has declined markedly."}, {"term": "carbonate saturation", "phonetic": "ˈkɑːbəneɪt ˌsætʃəˈreɪʃən", "def": "碳酸盐饱和度", "example": "Aragonite saturation state controls calcifier growth."}, {"term": "nutrient", "phonetic": "ˈnjuːtriənt", "def": "营养盐", "example": "Nutrient depletion limits primary productivity in oligotrophic gyres."}, {"term": "Redfield ratio", "phonetic": "ˈredfiːld ˈreɪʃiəʊ", "def": "雷德菲尔比值", "example": "The Redfield ratio describes average phytoplankton stoichiometry."}, {"term": "tracer", "phonetic": "ˈtreɪsər", "def": "示踪剂", "example": "CFC tracers reveal the age of deep water masses."}]}, {"cat": "oceanography", "title": "海底地形与板块构造", "type": "vocabulary", "items": [{"term": "continental shelf", "phonetic": "ˌkɒntɪˈnentəl ʃelf", "def": "大陆架", "example": "The East China Sea continental shelf is unusually wide."}, {"term": "abyssal plain", "phonetic": "əˈbɪsəl pleɪn", "def": "深海平原", "example": "Abyssal plains are among the flattest regions on Earth."}, {"term": "mid-ocean ridge", "phonetic": "mɪd ˈəʊʃən rɪdʒ", "def": "洋中脊", "example": "The Mid-Atlantic Ridge separates the Eurasian and North American plates."}, {"term": "oceanic trench", "phonetic": "əʊʃiˈænɪk trentʃ", "def": "海沟", "example": "The Mariana Trench reaches nearly 11,000 meters deep."}, {"term": "seamount", "phonetic": "ˈsiːmaʊnt", "def": "海山", "example": "Thousands of uncharted seamounts remain in the Pacific."}, {"term": "turbidite", "phonetic": "ˈtɜːbɪdaɪt", "def": "浊积岩", "example": "Turbidites record episodic slope failure events."}]}, {"cat": "oceanography", "title": "海平面上升与海洋热浪", "type": "vocabulary", "items": [{"term": "sea level rise", "phonetic": "siː ˈlevəl raɪz", "def": "海平面上升", "example": "Global mean sea level rise has accelerated since 1990."}, {"term": "steric change", "phonetic": "ˈsterɪk tʃeɪndʒ", "def": "比容变化", "example": "Steric change accounts for most of upper-ocean expansion."}, {"term": "marine heatwave", "phonetic": "məˈriːn ˈhiːtweɪv", "def": "海洋热浪", "example": "The 2014-2016 marine heatwave bleached the Great Barrier Reef."}, {"term": "ocean heat content", "phonetic": "ˈəʊʃən hiːt ˈkɒntent", "def": "海洋热含量", "example": "Ocean heat content has risen continuously for decades."}, {"term": "polar amplification", "phonetic": "ˈpəʊlər ˌæmplɪfɪˈkeɪʃən", "def": "极地放大效应", "example": "Polar amplification drives rapid Arctic sea ice loss."}, {"term": "isostatic rebound", "phonetic": "ˌaɪsəˈstætɪk rɪˈbaʊnd", "def": "均衡反弹", "example": "Isostatic rebound continues in formerly glaciated regions."}]}, {"cat": "oceanography", "title": "极地海洋与海冰", "type": "vocabulary", "items": [{"term": "sea ice extent", "phonetic": "siː aɪs ɪkˈstent", "def": "海冰范围", "example": "Summer sea ice extent in the Arctic has shrunk by 40%."}, {"term": "brine rejection", "phonetic": "braɪn rɪˈdʒekʃən", "def": "盐分析出", "example": "Brine rejection during freezing increases water density."}, {"term": "polynya", "phonetic": "pəˈlɪnjə", "def": "冰间湖", "example": "Coastal polynyas support high biological productivity in Antarctica."}, {"term": "ice shelf", "phonetic": "aɪs ʃelf", "def": "冰架", "example": "The collapse of the Larsen B ice shelf reshaped the regional ocean."}, {"term": "Antarctic Circumpolar Current", "phonetic": "ænˈtɑːktɪk səˈkʌmpəʊlər ˈkʌrənt", "def": "南极绕极流", "example": "The Antarctic Circumpolar Current connects all ocean basins."}, {"term": "meltwater plume", "phonetic": "ˈmeltwɔːtər pluːm", "def": "融水羽流", "example": "Meltwater plumes stratify the surface layer near Greenland."}, {"term": "fast ice", "phonetic": "fɑːst aɪs", "def": "固定冰", "example": "Fast ice provides a stable platform for instrument deployment."}]}, {"cat": "academic", "title": "论文写作高频动词", "type": "vocabulary", "items": [{"term": "elucidate", "phonetic": "ɪˈluːsɪdeɪt", "def": "阐明", "example": "Our results elucidate the underlying mechanism of the anomaly."}, {"term": "investigate", "phonetic": "ɪnˈvestɪɡeɪt", "def": "调查研究", "example": "We investigate the role of mesoscale eddies in nutrient transport."}, {"term": "demonstrate", "phonetic": "ˈdemənstreɪt", "def": "证明展示", "example": "This study demonstrates the validity of the proposed model."}, {"term": "hypothesize", "phonetic": "haɪˈpɒθəsaɪz", "def": "假设", "example": "We hypothesize that the variability is driven by remote forcing."}, {"term": "examine", "phonetic": "ɪɡˈzæmɪn", "def": "检验", "example": "Section 3 examines the sensitivity of results to parameter choice."}, {"term": "establish", "phonetic": "ɪˈstæblɪʃ", "def": "确立", "example": "We establish a new framework for satellite data assimilation."}, {"term": "underpin", "phonetic": "ˌʌndəˈpɪn", "def": "支撑", "example": "Long-term observations underpin our understanding of climate trends."}]}, {"cat": "academic", "title": "摘要写作黄金句式", "type": "template", "items": [{"term": "This study investigates ...", "phonetic": "ðɪs ˈstʌdi ɪnˈvestɪɡeɪts", "def": "本研究调查...", "example": "This study investigates the impact of El Niño on Pacific ecosystems."}, {"term": "Our findings reveal that ...", "phonetic": "aʊə ˈfaɪndɪŋz rɪˈviːl ðæt", "def": "我们的发现揭示...", "example": "Our findings reveal that the trend has accelerated since 2000."}, {"term": "The results suggest that ...", "phonetic": "ðə rɪˈzʌlts səˈdʒest ðæt", "def": "结果表明...", "example": "The results suggest that future projections may be underestimated."}, {"term": "We propose a novel framework that ...", "phonetic": "wiː prəˈpəʊz ə ˈnɒvəl ˈfreɪmwɜːk ðæt", "def": "我们提出新框架...", "example": "We propose a novel framework that integrates machine learning with physics."}, {"term": "These insights have implications for ...", "phonetic": "ðiːz ˈɪnsaɪts hæv ˌɪmplɪˈkeɪʃənz fɔː", "def": "这些发现对...有启示", "example": "These insights have implications for climate adaptation policy."}, {"term": "In summary, ...", "phonetic": "ɪn ˈsʌməri", "def": "总之", "example": "In summary, the model successfully reproduces the observed variability."}]}, {"cat": "academic", "title": "Introduction 的三段式结构", "type": "template", "items": [{"term": "漏斗式引入", "def": "Introduction 第一段从宏观背景逐步聚焦到具体问题。", "example": "A funnel-shaped introduction moves from broad context to the specific research gap."}, {"term": "研究空白", "def": "文献综述后明确指出尚未解决的问题。", "example": "Clearly state the research gap that motivates your work."}, {"term": "研究目标", "def": "用一句或两句话概括本文的具体目标。", "example": "End the introduction by stating your research aim and objectives."}, {"term": "贡献声明", "def": "明确说明本文的创新点与主要贡献。", "example": "Summarize the three key contributions in a single paragraph."}, {"term": "论文路线图", "def": "简要介绍各章节的安排顺序。", "example": "Provide a brief roadmap describing the structure of the paper."}, {"term": "避免的误区", "def": "不要在 Introduction 中详述方法或结果。", "example": "Avoid describing detailed methods or results in the introduction."}]}, {"cat": "academic", "title": "方法部分的写作要点", "type": "technique", "items": [{"term": "data assimilation", "phonetic": "ˈdeɪtə əˌsɪmɪˈleɪʃən", "def": "数据同化", "example": "Data assimilation combines observations with model forecasts."}, {"term": "cross-validation", "phonetic": "krɒs ˌvælɪˈdeɪʃən", "def": "交叉验证", "example": "We used ten-fold cross-validation to assess model skill."}, {"term": "ensemble member", "phonetic": "ɒnˈsɒmbəl ˈmembər", "def": "集合成员", "example": "Each ensemble member represents one possible realization."}, {"term": "sensitivity analysis", "phonetic": "ˌsensɪˈtɪvɪti əˈnæləsɪs", "def": "敏感性分析", "example": "Sensitivity analysis quantifies the response to parameter perturbation."}, {"term": "control run", "phonetic": "kənˈtrəʊl rʌn", "def": "控制试验", "example": "The control run uses default parameter values."}, {"term": "benchmark", "phonetic": "ˈbentʃmɑːk", "def": "基准", "example": "We benchmark our model against the ERA5 reanalysis."}]}, {"cat": "academic", "title": "结果描述与讨论", "type": "vocabulary", "items": [{"term": "notable", "phonetic": "ˈnəʊtəbəl", "def": "显著的", "example": "A notable increase appears after 2010."}, {"term": "marginal", "phonetic": "ˈmɑːdʒɪnəl", "def": "边缘的轻微的", "example": "The differences are marginal and not statistically significant."}, {"term": "consistent with", "phonetic": "kənˈsɪstənt wɪð", "def": "与...一致", "example": "Our results are consistent with previous observational studies."}, {"term": "in contrast to", "phonetic": "ɪn ˈkɒntrɑːst tuː", "def": "与...相反", "example": "In contrast to prior work, we find a weaker trend."}, {"term": "plausible explanation", "phonetic": "ˈplɔːzəbəl ˌekspləˈneɪʃən", "def": "合理的解释", "example": "One plausible explanation involves underestimated aerosol forcing."}, {"term": "caveat", "phonetic": "ˈkæviæt", "def": "注意事项", "example": "An important caveat is the limited spatial coverage."}]}, {"cat": "academic", "title": "审稿意见回复模板", "type": "template", "items": [{"term": "We thank the reviewer for ...", "phonetic": "wiː θæŋk ðə rɪˈvjuːər fɔː", "def": "感谢审稿人...", "example": "We thank the reviewer for highlighting this important point."}, {"term": "We have revised ... accordingly.", "phonetic": "wiː hæv rɪˈvaɪzd əˈkɔːdɪŋli", "def": "我们已相应修改...", "example": "We have revised the abstract accordingly."}, {"term": "This has been addressed in Section 3.", "phonetic": "ðɪs hæz biːn əˈdrest ɪn ˈsekʃən θriː", "def": "这一点已在第3节中处理。", "example": "This concern has been addressed in Section 3 of the revised manuscript."}, {"term": "We respectfully disagree because ...", "phonetic": "wiː rɪˈspektfəli ˌdɪsəˈɡriː bɪˈkɒz", "def": "我们持不同意见，因为...", "example": "We respectfully disagree because the suggested metric is not directly comparable."}, {"term": "As suggested, we have added ...", "phonetic": "æz səˈdʒestɪd wiː hæv ˈædɪd", "def": "按建议，我们已添加...", "example": "As suggested, we have added a new panel to Figure 4."}, {"term": "Please see the revised ...", "phonetic": "pliːz siː ðiː rɪˈvaɪzd", "def": "请查看修改后的...", "example": "Please see the revised paragraph on page 7."}]}, {"cat": "academic", "title": "参考文献格式与引用", "type": "technique", "items": [{"term": "et al.", "phonetic": "et æl", "def": "等人", "example": "Smith et al. (2023) reported similar findings."}, {"term": "in press", "phonetic": "ɪn pres", "def": "印刷中", "example": "The companion paper is currently in press."}, {"term": "personal communication", "phonetic": "ˈpɜːsənəl kəˌmjuːnɪˈkeɪʃən", "def": "个人交流", "example": "Data obtained via personal communication with the principal investigator."}, {"term": "doi", "phonetic": "dɒɪ", "def": "数字对象标识符", "example": "Every modern paper should include a DOI."}, {"term": "h-index", "phonetic": "eɪtʃ ˈɪndeks", "def": "h 指数", "example": "Her h-index exceeds 60 in the field of climate science."}, {"term": "impact factor", "phonetic": "ˈɪmpækt ˈfæktər", "def": "影响因子", "example": "The journal's impact factor has risen steadily."}]}, {"cat": "academic", "title": "学术语气的常见问题", "type": "technique", "items": [{"term": "arguably", "phonetic": "ˈɑːɡjuəbli", "def": "可以说", "example": "This is arguably the most important implication of our work."}, {"term": "albeit", "phonetic": "ɔːlˈbiːɪt", "def": "尽管", "example": "The trend is significant, albeit small in magnitude."}, {"term": "henceforth", "phonetic": "ˌhensˈfɔːθ", "def": "从今以后", "example": "The revised model will henceforth be called OCGM-v2."}, {"term": "therein", "phonetic": "ˌðeərˈɪn", "def": "在其中", "example": "The dataset contains multiple variables; therein lies its value."}, {"term": "whereby", "phonetic": "weəˈbaɪ", "def": "凭此", "example": "We propose a procedure whereby uncertainty is reduced iteratively."}, {"term": "thus", "phonetic": "ðʌs", "def": "因此", "example": "Thus, the hypothesis is supported by the evidence."}]}, {"cat": "academic", "title": "数据描述的高频表达", "type": "vocabulary", "items": [{"term": "anomaly", "phonetic": "əˈnɒməli", "def": "异常", "example": "Sea surface temperature anomalies exceeded two standard deviations."}, {"term": "climatology", "phonetic": "ˌklaɪməˈtɒlədʒi", "def": "气候态", "example": "Anomalies were computed relative to the 1991-2020 climatology."}, {"term": "percentile", "phonetic": "pəˈsentaɪl", "def": "百分位", "example": "Values above the 95th percentile are flagged as extremes."}, {"term": "spatially averaged", "phonetic": "ˈspeɪʃəli ˈævərɪdʒd", "def": "空间平均", "example": "The data are spatially averaged over the tropical Pacific."}, {"term": "temporally resolved", "phonetic": "ˈtempərəli rɪˈzɒlvd", "def": "时间分辨", "example": "The dataset is temporally resolved at hourly intervals."}, {"term": "gridded", "phonetic": "ˈɡrɪdɪd", "def": "网格化", "example": "The gridded product is available at 0.25° resolution."}]}, {"cat": "academic", "title": "图表标题与说明", "type": "template", "items": [{"term": "图题简洁", "def": "图题应能独立说明核心结论。", "example": "A good figure caption can stand alone without reading the main text."}, {"term": "误差棒", "def": "使用误差棒表示不确定度。", "example": "Error bars represent the 95% confidence interval."}, {"term": "显著性", "def": "用星号或斜线表示统计显著性。", "example": "Use asterisks to denote statistical significance levels."}, {"term": "配色原则", "def": "避免红绿组合以照顾色觉障碍读者。", "example": "Avoid red-green color combinations to be colorblind-friendly."}, {"term": "坐标轴", "def": "坐标轴必须包含变量名与单位。", "example": "Every axis must include the variable name and its units."}, {"term": "图注引用", "def": "在正文中按顺序引用每个图。", "example": "Refer to each figure in numerical order within the text."}]}, {"cat": "academic", "title": "结论与摘要的写法", "type": "technique", "items": [{"term": "in conclusion", "phonetic": "ɪn kənˈkluːʒən", "def": "综上所述", "example": "In conclusion, the model captures the observed variability."}, {"term": "to summarize", "phonetic": "tuː ˈsʌməraɪz", "def": "总结一下", "example": "To summarize, three key findings emerge from this study."}, {"term": "take-home message", "phonetic": "teɪk həʊm ˈmesɪdʒ", "def": "核心信息", "example": "The take-home message is that warming trends have accelerated."}, {"term": "future work", "phonetic": "ˈfjuːtʃə wɜːk", "def": "未来工作", "example": "Future work will extend the analysis to high-resolution simulations."}, {"term": "limitation", "phonetic": "ˌlɪmɪˈteɪʃən", "def": "局限性", "example": "One limitation is the lack of subsurface observations."}, {"term": "implication", "phonetic": "ˌɪmplɪˈkeɪʃən", "def": "启示", "example": "This has direct implications for fisheries management."}]}, {"cat": "academic", "title": "投稿与同行评审", "type": "vocabulary", "items": [{"term": "peer review", "phonetic": "pɪə rɪˈvjuː", "def": "同行评审", "example": "The paper underwent two rounds of peer review."}, {"term": "cover letter", "phonetic": "ˈkʌvə ˈletər", "def": "投稿信", "example": "A strong cover letter highlights the novelty of your work."}, {"term": "revise and resubmit", "phonetic": "rɪˈvaɪz ænd ˌriːsəˈbɪmɪt", "def": "修改后重投", "example": "We received a revise and resubmit decision from the editor."}, {"term": "rejection", "phonetic": "rɪˈdʒekʃən", "def": "拒稿", "example": "Desk rejection occurred within three days of submission."}, {"term": "transfer", "phonetic": "trænsˈfɜːr", "def": "转投", "example": "The editor offered to transfer the manuscript to a sister journal."}, {"term": "copyright", "phonetic": "ˈkɒpiraɪt", "def": "版权", "example": "Authors must sign a copyright transfer agreement."}]}, {"cat": "academic", "title": "学术诚信与伦理", "type": "vocabulary", "items": [{"term": "plagiarism", "phonetic": "ˈpleɪdʒərɪzəm", "def": "剽窃", "example": "Plagiarism in any form is grounds for immediate retraction."}, {"term": "self-citation", "phonetic": "self saɪˈteɪʃən", "def": "自引", "example": "Excessive self-citation is considered a questionable practice."}, {"term": "data fabrication", "phonetic": "ˈdeɪtə ˌfæbrɪˈkeɪʃən", "def": "数据造假", "example": "Data fabrication is a serious violation of research ethics."}, {"term": "conflict of interest", "phonetic": "ˈkɒnflɪkt əv ˈɪntrəst", "def": "利益冲突", "example": "Authors must declare any conflict of interest."}, {"term": "IRB approval", "phonetic": "ˌaɪ ɑː biː əˈpruːvəl", "def": "伦理委员会批准", "example": "The study received IRB approval prior to data collection."}, {"term": "preprint", "phonetic": "ˈpriːprɪnt", "def": "预印本", "example": "The authors posted a preprint on arXiv before submission."}]}, {"cat": "frontier", "title": "大语言模型与多模态 AI", "type": "vocabulary", "items": [{"term": "large language model", "phonetic": "lɑːdʒ ˈlæŋɡwɪdʒ ˈmɒdəl", "def": "大语言模型", "example": "Large language models can generate human-like text."}, {"term": "transformer", "phonetic": "trænsˈfɔːmər", "def": "Transformer 架构", "example": "The transformer architecture underpins most modern LLMs."}, {"term": "fine-tuning", "phonetic": "faɪn ˈtjuːnɪŋ", "def": "微调", "example": "Fine-tuning adapts a pretrained model to a specific task."}, {"term": "retrieval-augmented generation", "phonetic": "rɪˈtriːvəl ˈɔːɡmentɪd ˌdʒenəˈreɪʃən", "def": "检索增强生成", "example": "Retrieval-augmented generation reduces hallucination."}, {"term": "hallucination", "phonetic": "həˌluːsɪˈneɪʃən", "def": "幻觉", "example": "Model hallucination remains a critical problem in deployment."}, {"term": "context window", "phonetic": "ˈkɒntekst ˈwɪndəʊ", "def": "上下文窗口", "example": "The context window has expanded to one million tokens."}, {"term": "emergent ability", "phonetic": "iˈmɜːdʒənt əˈbɪləti", "def": "涌现能力", "example": "Emergent abilities appear at certain model scales."}]}, {"cat": "frontier", "title": "气候科学新发现", "type": "vocabulary", "items": [{"term": "tipping point", "phonetic": "ˈtɪpɪŋ pɔɪnt", "def": "临界点", "example": "The Greenland ice sheet may be near a tipping point."}, {"term": "carbon budget", "phonetic": "ˈkɑːbən ˈbʌdʒɪt", "def": "碳预算", "example": "The remaining carbon budget for 1.5°C is very small."}, {"term": "cloud feedback", "phonetic": "klaʊd ˈfiːdbæk", "def": "云反馈", "example": "Cloud feedback is the largest source of uncertainty in climate models."}, {"term": "permafrost thaw", "phonetic": "ˈpɜːməfrɒst θɔː", "def": "永久冻土融化", "example": "Permafrost thaw releases ancient carbon to the atmosphere."}, {"term": "methane plume", "phonetic": "ˈmiːθeɪn pluːm", "def": "甲烷羽流", "example": "Satellites detected a massive methane plume over the Arctic."}, {"term": "stratospheric cooling", "phonetic": "ˌstrætəˈsferɪk ˈkuːlɪŋ", "def": "平流层冷却", "example": "Stratospheric cooling masks surface warming trends."}]}, {"cat": "frontier", "title": "深海与海洋新发现", "type": "vocabulary", "items": [{"term": "hydrothermal vent", "phonetic": "ˌhaɪdrəˈθɜːməl vent", "def": "热液喷口", "example": "Hydrothermal vents host unique chemosynthetic ecosystems."}, {"term": "hadal zone", "phonetic": "ˈheɪdəl zəʊn", "def": "超深渊带", "example": "The hadal zone lies below 6000 meters depth."}, {"term": "microplastic", "phonetic": "ˌmaɪkrəʊˈplæstɪk", "def": "微塑料", "example": "Microplastic contamination has been found in Mariana Trench sediments."}, {"term": "deoxygenation", "phonetic": "diːˌɒksɪdʒəˈneɪʃən", "def": "脱氧", "example": "Global ocean deoxygenation threatens marine life."}, {"term": "mesopelagic", "phonetic": "ˌmesəpəˈlædʒɪk", "def": "中深层", "example": "Mesopelagic fish biomass may be an order of magnitude higher than thought."}, {"term": "marine snow", "phonetic": "məˈriːn snəʊ", "def": "海雪", "example": "Marine snow is a continuous shower of organic debris."}]}, {"cat": "frontier", "title": "生物技术与 AI for Science", "type": "vocabulary", "items": [{"term": "CRISPR-Cas9", "phonetic": "ˈkrɪspər kæs naɪn", "def": "基因编辑技术", "example": "CRISPR-Cas9 enables precise gene editing in many species."}, {"term": "AlphaFold", "phonetic": "ˈælfəfəʊld", "def": "AlphaFold 蛋白结构预测", "example": "AlphaFold predicted structures for nearly all known proteins."}, {"term": "mRNA vaccine", "phonetic": "em ɑːr en ˌvækˈsiːn", "def": "信使 RNA 疫苗", "example": "mRNA vaccines transformed the response to the COVID-19 pandemic."}, {"term": "organoid", "phonetic": "ˈɔːɡənɔɪd", "def": "类器官", "example": "Brain organoids offer new models for neurological research."}, {"term": "synthetic biology", "phonetic": "sɪnˈθetɪk baɪˈɒlədʒi", "def": "合成生物学", "example": "Synthetic biology aims to design novel biological systems."}, {"term": "base editing", "phonetic": "beɪs ˈedɪtɪŋ", "def": "碱基编辑", "example": "Base editing allows single-letter changes in DNA."}]}, {"cat": "frontier", "title": "量子计算与量子优势", "type": "vocabulary", "items": [{"term": "qubit", "phonetic": "ˈkjuːbɪt", "def": "量子比特", "example": "A qubit can exist in a superposition of states."}, {"term": "superposition", "phonetic": "ˌsuːpəpəˈzɪʃən", "def": "叠加", "example": "Superposition enables quantum parallelism."}, {"term": "entanglement", "phonetic": "ɪnˈtæŋɡəlmənt", "def": "纠缠", "example": "Entanglement is the key resource for quantum communication."}, {"term": "quantum supremacy", "phonetic": "ˈkwɒntəm sʊˈpreɪməsi", "def": "量子优势", "example": "Quantum supremacy was first claimed by Google in 2019."}, {"term": "decoherence", "phonetic": "diːkəʊˈhɪərəns", "def": "退相干", "example": "Decoherence is the main obstacle to scaling quantum computers."}, {"term": "error correction", "phonetic": "ˈerər kəˈrekʃən", "def": "纠错", "example": "Quantum error correction requires physical redundancy."}]}, {"cat": "frontier", "title": "太空望远镜与行星探索", "type": "vocabulary", "items": [{"term": "James Webb Space Telescope", "phonetic": "dʒeɪmz web spaʊs ˈteleskəʊp", "def": "詹姆斯·韦伯空间望远镜", "example": "The James Webb Space Telescope is revolutionizing cosmology."}, {"term": "exoplanet", "phonetic": "ˌeksəʊˈplænɪt", "def": "系外行星", "example": "Over 5000 exoplanets have been confirmed to date."}, {"term": "biosignature", "phonetic": "ˌbaɪəʊˈsɪɡnətʃər", "def": "生物特征", "example": "The team reported a possible biosignature in the exoplanet's atmosphere."}, {"term": "sample return", "phonetic": "ˈsɑːmpəl rɪˈtɜːn", "def": "样本返回", "example": "China's Chang'e mission achieved lunar sample return."}, {"term": "Mars rover", "phonetic": "mɑːz ˈrəʊvər", "def": "火星车", "example": "The Perseverance Mars rover is collecting rock samples."}, {"term": "gravitational wave", "phonetic": "ˌɡrævɪˈteɪʃənəl weɪv", "def": "引力波", "example": "Gravitational waves were first detected by LIGO in 2015."}]}, {"cat": "frontier", "title": "新能源与储能技术", "type": "vocabulary", "items": [{"term": "perovskite solar cell", "phonetic": "pəˈrɒvskaɪt ˈsəʊlə sel", "def": "钙钛矿太阳能电池", "example": "Perovskite solar cells have surpassed 26% efficiency."}, {"term": "solid-state battery", "phonetic": "sɒld steɪt ˈbætəri", "def": "固态电池", "example": "Solid-state batteries promise higher energy density."}, {"term": "green hydrogen", "phonetic": "ɡriːn ˈhaɪdrədʒən", "def": "绿氢", "example": "Green hydrogen is produced by electrolysis using renewable power."}, {"term": "fusion energy", "phonetic": "ˈfjuːʒən ˈenədʒi", "def": "聚变能", "example": "The National Ignition Facility achieved fusion energy gain."}, {"term": "carbon capture", "phonetic": "ˈkɑːbən ˈkæptʃər", "def": "碳捕集", "example": "Direct air carbon capture is becoming commercially viable."}, {"term": "grid-scale storage", "phonetic": "ɡrɪd skeɪl ˈstɔːrɪdʒ", "def": "电网级储能", "example": "Grid-scale storage is essential for renewable integration."}]}, {"cat": "news", "title": "全球经济与金融动态", "type": "vocabulary", "items": [{"term": "inflation", "phonetic": "ɪnˈfleɪʃən", "def": "通货膨胀", "example": "Central banks raised rates to combat persistent inflation."}, {"term": "interest rate hike", "phonetic": "ˈɪntrəst reɪt haɪk", "def": "加息", "example": "The Federal Reserve implemented another interest rate hike."}, {"term": "gross domestic product", "phonetic": "ɡrəʊs dəˈmestɪk ˈprɒdʌkt", "def": "国内生产总值", "example": "GDP growth slowed to 1.2% in the last quarter."}, {"term": "recession", "phonetic": "rɪˈseʃən", "def": "衰退", "example": "Analysts warn of a looming recession in Europe."}, {"term": "supply chain", "phonetic": "səˈplaɪ tʃeɪn", "def": "供应链", "example": "Global supply chain disruptions are gradually easing."}, {"term": "currency depreciation", "phonetic": "ˈkʌrənsi dɪˌpriːʃiˈeɪʃən", "def": "货币贬值", "example": "The yen experienced sharp currency depreciation."}]}, {"cat": "news", "title": "科技产业与公司动态", "type": "vocabulary", "items": [{"term": "antitrust", "phonetic": "ˌæntiˈtrʌst", "def": "反垄断", "example": "Regulators launched an antitrust probe into the chipmaker."}, {"term": "initial public offering", "phonetic": "ɪˈnɪʃəl ˈpʌblɪk ˈɒfərɪŋ", "def": "首次公开募股", "example": "The startup filed for an initial public offering."}, {"term": "layoff", "phonetic": "ˈleɪɒf", "def": "裁员", "example": "The company announced massive layoffs amid slowing growth."}, {"term": "market capitalization", "phonetic": "ˈmɑːkɪt ˌkæpɪtəlaɪˈzeɪʃən", "def": "市值", "example": "Its market capitalization briefly exceeded one trillion dollars."}, {"term": "merger", "phonetic": "ˈmɜːdʒər", "def": "合并", "example": "The two firms completed a long-anticipated merger."}, {"term": "venture capital", "phonetic": "ˈventʃə ˈkæpɪtəl", "def": "风险投资", "example": "Venture capital funding for AI startups hit a record high."}]}, {"cat": "news", "title": "环境问题与可持续发展", "type": "vocabulary", "items": [{"term": "biodiversity loss", "phonetic": "ˌbaɪəʊdaɪˈvɜːsəti lɒs", "def": "生物多样性丧失", "example": "Biodiversity loss is accelerating worldwide."}, {"term": "deforestation", "phonetic": "diːˌfɒrɪˈsteɪʃən", "def": "森林砍伐", "example": "Deforestation in the Amazon reached a six-year high."}, {"term": "wildfire", "phonetic": "ˈwaɪldfaɪər", "def": "野火", "example": "Unprecedented wildfires ravaged Mediterranean countries."}, {"term": "drought", "phonetic": "draʊt", "def": "干旱", "example": "Prolonged drought threatened food security in the Horn of Africa."}, {"term": "net zero", "phonetic": "net ˈzɪərəʊ", "def": "净零排放", "example": "Many countries have pledged to reach net zero by 2050."}, {"term": "circular economy", "phonetic": "ˈsɜːkjələr iˈkɒnəmi", "def": "循环经济", "example": "A circular economy minimizes waste and resource use."}]}, {"cat": "news", "title": "国际关系与外交", "type": "vocabulary", "items": [{"term": "diplomatic tension", "phonetic": "ˌdɪpləˈmætɪk ˈtenʃən", "def": "外交紧张", "example": "Diplomatic tensions rose after the border incident."}, {"term": "sanction", "phonetic": "ˈsæŋkʃən", "def": "制裁", "example": "New sanctions targeted the country's defense sector."}, {"term": "summit", "phonetic": "ˈsʌmɪt", "def": "峰会", "example": "The leaders met at the G7 summit in Hiroshima."}, {"term": "bilateral agreement", "phonetic": "ˌbaɪˈlætərəl əˈɡriːmənt", "def": "双边协议", "example": "The two nations signed a bilateral agreement on trade."}, {"term": "ceasefire", "phonetic": "ˈsiːsfaɪər", "def": "停火", "example": "A fragile ceasefire took effect after months of negotiation."}, {"term": "humanitarian aid", "phonetic": "hjuːˌmænɪˈteəriən eɪd", "def": "人道主义援助", "example": "Humanitarian aid reached the displaced communities."}]}, {"cat": "news", "title": "科技政策与研究资助", "type": "vocabulary", "items": [{"term": "research grant", "phonetic": "rɪˈsɜːtʃ ɡrɑːnt", "def": "研究经费", "example": "The agency awarded a multi-year research grant."}, {"term": "open access", "phonetic": "ˈəʊpən ˈækses", "def": "开放获取", "example": "The journal transitioned to a fully open access model."}, {"term": "data sharing", "phonetic": "ˈdeɪtə ˈʃeərɪŋ", "def": "数据共享", "example": "Funders increasingly require public data sharing."}, {"term": "ethics review", "phonetic": "ˈeθɪks rɪˈvjuː", "def": "伦理审查", "example": "All studies must undergo ethics review before fieldwork."}, {"term": "export control", "phonetic": "ɪkˈspɔːt kənˈtrəʊl", "def": "出口管制", "example": "The government tightened export controls on advanced chips."}, {"term": "national strategy", "phonetic": "ˈnæʃənəl ˈstrætədʒi", "def": "国家战略", "example": "A new national strategy prioritizes quantum technology."}]}, {"cat": "listening", "title": "学术讲座听力技巧", "type": "tips", "items": [{"term": "preliminary", "phonetic": "prɪˈlɪmɪnəri", "def": "预备的", "example": "Read the preliminary slides before the talk begins."}, {"term": "take notes", "phonetic": "teɪk nəʊts", "def": "记笔记", "example": "Always take notes on definitions and key equations."}, {"term": "Q&A session", "phonetic": "kjuː ənd eɪ ˈseʃən", "def": "问答环节", "example": "The Q&A session often clarifies subtle points."}, {"term": "visual cue", "phonetic": "ˈvɪʒuəl kjuː", "def": "视觉提示", "example": "Watch for visual cues when the speaker changes topic."}, {"term": "filler word", "phonetic": "ˈfɪlər wɜːd", "def": "填充词", "example": "Speakers often use filler words such as 'actually' or 'so'."}, {"term": "key takeaway", "phonetic": "kiː ˈteɪkəweɪ", "def": "关键要点", "example": "Identify one key takeaway after each section."}]}, {"cat": "listening", "title": "会议报告要点抓取", "type": "technique", "items": [{"term": "abstract", "phonetic": "ˈæbstrækt", "def": "摘要", "example": "Skim the abstract to anticipate the main findings."}, {"term": "motivation", "phonetic": "ˌməʊtɪˈveɪʃən", "def": "研究动机", "example": "Identify the motivation behind the study early in the talk."}, {"term": "methodology", "phonetic": "ˌmeθəˈdɒlədʒi", "def": "方法", "example": "Listen for the methodology section to evaluate the work."}, {"term": "result", "phonetic": "rɪˈzʌlt", "def": "结果", "example": "Note every reported result, even those with weak effects."}, {"term": "conclusion", "phonetic": "kənˈkluːʒən", "def": "结论", "example": "The conclusion often matches the last slide verbatim."}, {"term": "acknowledgement", "phonetic": "əkˈnɒlɪdʒmənt", "def": "致谢", "example": "The acknowledgement slide reveals funding sources."}]}, {"cat": "listening", "title": "新闻听力训练", "type": "tips", "items": [{"term": "headline", "phonetic": "ˈhedlaɪn", "def": "标题", "example": "Read the headline first to set the topic."}, {"term": "breaking news", "phonetic": "ˈbreɪkɪŋ njuːz", "def": "突发新闻", "example": "Breaking news is often delivered at a faster pace."}, {"term": "correspondent", "phonetic": "ˌkɒrɪˈspɒndənt", "def": "记者", "example": "Listen carefully to the correspondent's name and location."}, {"term": "quote", "phonetic": "kwəʊt", "def": "引述", "example": "Quotes from officials often carry the main message."}, {"term": "background", "phonetic": "ˈbækgraʊnd", "def": "背景", "example": "Background information usually appears in the second half."}, {"term": "anchor", "phonetic": "ˈæŋkər", "def": "主播", "example": "The anchor summarizes the story before and after the report."}]}, {"cat": "listening", "title": "日常英语听力提升", "type": "tips", "items": [{"term": "podcast", "phonetic": "ˈpɒdkɑːst", "def": "播客", "example": "Listen to one podcast episode per day at a comfortable speed."}, {"term": "caption", "phonetic": "ˈkæpʃən", "def": "字幕", "example": "Watch videos with captions to reinforce pronunciation."}, {"term": "shadow", "phonetic": "ˈʃædəʊ", "def": "跟读", "example": "Shadow native speakers to improve intonation."}, {"term": "dictation", "phonetic": "dɪkˈteɪʃən", "def": "听写", "example": "Dictation trains both listening and spelling accuracy."}, {"term": "ambient", "phonetic": "ˈæmbiənt", "def": "环境", "example": "Use ambient listening to build familiarity with the language."}, {"term": "comprehensible input", "phonetic": "ˌkɒmprɪˈhensəbəl ˈɪnpʊt", "def": "可理解输入", "example": "Seek comprehensible input that is just above your level."}]}, {"cat": "speaking", "title": "会议报告的常用句式", "type": "phrases", "items": [{"term": "I'd like to begin by ...", "phonetic": "aɪd laɪk tə bɪˈɡaɪn baɪ", "def": "我想先...", "example": "I'd like to begin by thanking the organizers."}, {"term": "Moving on to ...", "phonetic": "ˈmuːvɪŋ ɒn tuː", "def": "接下来...", "example": "Moving on to the second part of the talk."}, {"term": "As you can see from this figure ...", "phonetic": "æz juː kæn siː frɒm ðɪs ˈfɪɡər", "def": "从这个图可以看出...", "example": "As you can see from this figure, the trend reverses in 2015."}, {"term": "To wrap up ...", "phonetic": "tuː ræp ʌp", "def": "总结一下", "example": "To wrap up, our results show a clear acceleration."}, {"term": "I welcome any questions.", "phonetic": "aɪ ˈwelkəm ˈeni ˈkwestʃənz", "def": "欢迎各位提问。", "example": "Thank you for listening; I welcome any questions."}, {"term": "That's a great question.", "phonetic": "ðæts ə ɡreɪt ˈkwestʃən", "def": "这是个很好的问题。", "example": "That's a great question; let me address it."}]}, {"cat": "speaking", "title": "问答环节的应对", "type": "phrases", "items": [{"term": "Could you clarify ...?", "phonetic": "kʊd juː ˈklærəfaɪ", "def": "能澄清一下吗?", "example": "Could you clarify what you mean by 'extreme event'?"}, {"term": "I see your point.", "phonetic": "aɪ siː jɔː pɔɪnt", "def": "我理解你的观点。", "example": "I see your point, but our data suggest otherwise."}, {"term": "That's an interesting suggestion.", "phonetic": "ðæts ən ˈɪntrəstɪŋ səˈdʒestʃən", "def": "这是个有趣的建议。", "example": "That's an interesting suggestion; we will consider it in future work."}, {"term": "Let me get back to you on that.", "phonetic": "let miː ɡet bæk tuː juː ɒn ðæt", "def": "回头再答复你。", "example": "Let me get back to you on that after the talk."}, {"term": "I'm not sure, to be honest.", "phonetic": "aɪm nɒt ʃʊər tə biː ˈɒnɪst", "def": "老实说，我不太确定。", "example": "I'm not sure, to be honest; we haven't tested that yet."}, {"term": "That's beyond the scope of this paper.", "phonetic": "ðæts bɪˈjɒnd ðə skəʊp əv ðɪs ˈpeɪpər", "def": "那超出了本文的范围。", "example": "That's beyond the scope of this paper, but it's a great idea."}]}, {"cat": "speaking", "title": "日常交流英语", "type": "phrases", "items": [{"term": "How's it going?", "phonetic": "haʊz ɪt ˈɡəʊɪŋ", "def": "最近怎么样?", "example": "Hey, how's it going? Long time no see."}, {"term": "I'm looking forward to it.", "phonetic": "aɪm ˈlʊkɪŋ ˈfɔːwəd tuː ɪt", "def": "我很期待。", "example": "I'm looking forward to the conference next week."}, {"term": "That makes sense.", "phonetic": "ðæt meɪks sens", "def": "有道理。", "example": "That makes sense; thanks for the explanation."}, {"term": "I'll keep that in mind.", "phonetic": "aɪl kiːp ðæt ɪn maɪnd", "def": "我会记住的。", "example": "I'll keep that in mind for next time."}, {"term": "Let's catch up soon.", "phonetic": "lets kætʃ ʌp suːn", "def": "改天再聊。", "example": "Let's catch up soon over coffee."}, {"term": "Take care!", "phonetic": "teɪk keər", "def": "保重!", "example": "Take care and safe travels back home."}]}, {"cat": "speaking", "title": "视频会议英语", "type": "phrases", "items": [{"term": "Can you hear me clearly?", "phonetic": "kæn juː hɪər miː ˈklɪəli", "def": "能听清我说话吗?", "example": "Hi everyone, can you hear me clearly?"}, {"term": "Sorry, I was on mute.", "phonetic": "ˈsɒri aɪ wɒz ɒn mjuːt", "def": "抱歉，我没开麦。", "example": "Sorry, I was on mute; let me repeat that."}, {"term": "Let me share my screen.", "phonetic": "let miː ʃeə maɪ skriːn", "def": "我来共享屏幕。", "example": "Let me share my screen so you can see the figure."}, {"term": "I'll follow up by email.", "phonetic": "aɪl ˈfɒləʊ ʌp baɪ ˈiːmeɪl", "def": "我之后邮件跟进。", "example": "I'll follow up by email with the slides."}, {"term": "Do we have time for questions?", "phonetic": "duː wiː hæv taɪm fɔː ˈkwestʃənz", "def": "还有时间提问吗?", "example": "Do we have time for questions before we wrap up?"}, {"term": "Thanks for joining today.", "phonetic": "θæŋks fɔː ˈdʒɔɪnɪŋ təˈdeɪ", "def": "感谢今天参会。", "example": "Thanks for joining today; see you next week."}]}, {"cat": "reading", "title": "快速阅读 Skimming 与 Scanning", "type": "technique", "items": [{"term": "skimming", "phonetic": "ˈskɪmɪŋ", "def": "略读", "example": "Skimming gives you the gist of a paper in minutes."}, {"term": "scanning", "phonetic": "ˈskænɪŋ", "def": "扫读", "example": "Use scanning to locate specific data points quickly."}, {"term": "topic sentence", "phonetic": "ˈtɒpɪk ˈsentəns", "def": "主题句", "example": "The topic sentence is usually the first sentence of a paragraph."}, {"term": "abstract", "phonetic": "ˈæbstrækt", "def": "摘要", "example": "Read the abstract before the full paper to save time."}, {"term": "section heading", "phonetic": "ˈsekʃən ˈhedɪŋ", "def": "章节标题", "example": "Section headings reveal the structure of the paper."}, {"term": "conclusion", "phonetic": "kənˈkluːʒən", "def": "结论", "example": "Always read the conclusion to understand the main message."}]}, {"cat": "reading", "title": "文献精读的三遍法", "type": "technique", "items": [{"term": "first pass", "phonetic": "fɜːst pɑːs", "def": "第一遍", "example": "The first pass gives you a bird's-eye view of the paper."}, {"term": "bird's-eye view", "phonetic": "bɜːdz aɪ vjuː", "def": "全局视角", "example": "Reading the figures and captions provides a bird's-eye view."}, {"term": "second pass", "phonetic": "ˈsekənd pɑːs", "def": "第二遍", "example": "The second pass focuses on the technical content."}, {"term": "highlight", "phonetic": "ˈhaɪlaɪt", "def": "高亮", "example": "Highlight only the most important sentences."}, {"term": "third pass", "phonetic": "θɜːd pɑːs", "def": "第三遍", "example": "The third pass reconstructs the paper in your own words."}, {"term": "annotation", "phonetic": "ˌænəˈteɪʃən", "def": "批注", "example": "Write brief annotations to record your own questions."}]}, {"cat": "reading", "title": "新闻阅读技巧", "type": "technique", "items": [{"term": "lead", "phonetic": "liːd", "def": "导语", "example": "The lead summarizes the who, what, when, where, and why."}, {"term": "inverted pyramid", "phonetic": "ɪnˈvɜːtɪd ˈpɪrəmɪd", "def": "倒金字塔", "example": "News articles follow an inverted pyramid structure."}, {"term": "source", "phonetic": "sɔːs", "def": "信源", "example": "Check the source for credibility and potential bias."}, {"term": "context", "phonetic": "ˈkɒntekst", "def": "背景", "example": "Contextual paragraphs provide background information."}, {"term": "follow-up", "phonetic": "ˈfɒləʊ ʌp", "def": "后续报道", "example": "Follow-up articles expand on the original story."}, {"term": "opinion piece", "phonetic": "əˈpɪnjən piːs", "def": "观点文章", "example": "Distinguish between news reports and opinion pieces."}]}, {"cat": "reading", "title": "批判性阅读要点", "type": "technique", "items": [{"term": "evaluate", "phonetic": "ɪˈvæljueɪt", "def": "评估", "example": "Evaluate the evidence behind every major claim."}, {"term": "assumption", "phonetic": "əˈsʌmpʃən", "def": "假设", "example": "Identify hidden assumptions in the argument."}, {"term": "bias", "phonetic": "ˈbaɪəs", "def": "偏见", "example": "Watch for selection bias in datasets and case studies."}, {"term": "reproducibility", "phonetic": "riːˌprədjuːsɪˈbɪləti", "def": "可重复性", "example": "Reproducibility is a cornerstone of scientific research."}, {"term": "logical fallacy", "phonetic": "ˈlɒdʒɪkəl ˈfæləsi", "def": "逻辑谬误", "example": "Be alert to logical fallacies such as post hoc reasoning."}, {"term": "counterargument", "phonetic": "ˌkaʊntərˈɑːɡjumənt", "def": "反方观点", "example": "Consider the strongest counterargument to the paper."}]}, {"cat": "writing", "title": "学术邮件写作模板", "type": "template", "items": [{"term": "Dear Professor Smith,", "phonetic": "dɪə prəˈfesə smɪθ", "def": "史密斯教授，", "example": "Dear Professor Smith, I am writing to inquire about..."}, {"term": "I am writing to ...", "phonetic": "aɪ æm ˈraɪtɪŋ tuː", "def": "我写这封邮件是为了...", "example": "I am writing to follow up on our previous discussion."}, {"term": "I would appreciate it if ...", "phonetic": "aɪ wʊd əˈpriːʃɪeɪt ɪt ɪf", "def": "如果...我将不胜感激", "example": "I would appreciate it if you could review my draft."}, {"term": "Please find attached ...", "phonetic": "pliːz faɪnd əˈtætʃt", "def": "请查收附件...", "example": "Please find attached my CV and research statement."}, {"term": "Looking forward to hearing from you.", "phonetic": "ˈlʊkɪŋ ˈfɔːwəd tuː ˈhɪərɪŋ frɒm juː", "def": "期待您的回信。", "example": "Looking forward to hearing from you at your convenience."}, {"term": "Best regards,", "phonetic": "best rɪˈɡɑːdz", "def": "此致敬礼，", "example": "Best regards, [Your Name]"}]}, {"cat": "writing", "title": "论文摘要写作要点", "type": "technique", "items": [{"term": "concise", "phonetic": "kənˈsaɪs", "def": "简洁的", "example": "An abstract should be concise, typically 200-300 words."}, {"term": "structured abstract", "phonetic": "ˈstrʌktʃəd ˈæbstrækt", "def": "结构化摘要", "example": "Many journals now require a structured abstract."}, {"term": "background sentence", "phonetic": "ˈbækgraʊnd ˈsentəns", "def": "背景句", "example": "Open with a one-sentence background statement."}, {"term": "objective", "phonetic": "əbˈdʒektɪv", "def": "目标", "example": "State the objective clearly in the second sentence."}, {"term": "methods sentence", "phonetic": "ˈmeθədz ˈsentəns", "def": "方法句", "example": "Summarize methods in one or two sentences."}, {"term": "key finding", "phonetic": "kiː ˈfaɪndɪŋ", "def": "主要发现", "example": "Highlight one or two key findings."}]}, {"cat": "writing", "title": "研究计划书的写作结构", "type": "template", "items": [{"term": "research question", "phonetic": "rɪˈsɜːtʃ ˈkwestʃən", "def": "研究问题", "example": "Begin with a clear and focused research question."}, {"term": "literature review", "phonetic": "ˈlɪtərətʃə rɪˈvjuː", "def": "文献综述", "example": "The literature review shows your command of the field."}, {"term": "research design", "phonetic": "rɪˈsɜːtʃ dɪˈzaɪn", "def": "研究设计", "example": "Describe the research design and its rationale."}, {"term": "timeline", "phonetic": "ˈtaɪmlaɪn", "def": "时间表", "example": "Provide a realistic timeline for each work package."}, {"term": "expected outcome", "phonetic": "ɪkˈspektɪd ˈaʊtkʌm", "def": "预期成果", "example": "State the expected outcomes and their broader impact."}, {"term": "budget", "phonetic": "ˈbʌdʒɪt", "def": "预算", "example": "Justify each line item in the budget request."}]}, {"cat": "writing", "title": "科普写作的语言技巧", "type": "technique", "items": [{"term": "analogy", "phonetic": "əˈnælədʒi", "def": "类比", "example": "Use everyday analogies to explain complex phenomena."}, {"term": "hook", "phonetic": "hʊk", "def": "开头钩子", "example": "Start with a hook that grabs the reader's attention."}, {"term": "storytelling", "phonetic": "ˈstɔːriˌtelɪŋ", "def": "讲故事", "example": "Storytelling makes science memorable and engaging."}, {"term": "jargon-free", "phonetic": "ˈdʒɑːɡən friː", "def": "避免行话", "example": "Keep the language jargon-free for general readers."}, {"term": "call to action", "phonetic": "kɔːl tuː ˈækʃən", "def": "号召行动", "example": "End with a call to action that motivates the reader."}, {"term": "visual metaphor", "phonetic": "ˈvɪʒuəl ˈmetəfər", "def": "视觉隐喻", "example": "A visual metaphor can replace a paragraph of text."}]}];
+
+// ===== State =====
+let state={todos:[],ideas:[],projects:[],papers:[],fitness:[],englishLog:[],weeklyNotes:[],literature:[],experiments:[],meetings:[],timeLogs:[],settings:{lastExportReminder:''}};
+let currentView='today';
+let ideaTagFilter=null;
+let litFilter={status:null,tag:null};
+let expFilter={project:null,status:null};
+let meetingFilter={type:null};
+let timer={running:false,mode:'work',remaining:25*60,projectId:'',activityType:'research',intervalId:null,workDuration:25,breakDuration:5,completedSessions:0};
+
+// ===== Utilities =====
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtTime(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r}
+function todayStr(){return fmtDate(new Date())}
+function tomorrowStr(){return fmtDate(addDays(new Date(),1))}
+function parseDate(s){if(!s)return null;const d=new Date(s+'T00:00:00');return isNaN(d)?null:d}
+function daysUntil(ds){const d=parseDate(ds);if(!d)return null;const t=new Date();t.setHours(0,0,0,0);return Math.round((d-t)/86400000)}
+function isOverdue(todo){return!todo.completed&&todo.deadline&&daysUntil(todo.deadline)<0}
+function getWeekStart(){const n=new Date(),d=n.getDay()||7;const m=new Date(n);m.setDate(n.getDate()-d+1);m.setHours(0,0,0,0);return m}
+function getWeekEnd(){const e=new Date(getWeekStart());e.setDate(e.getDate()+6);e.setHours(23,59,59,999);return e}
+function isThisWeek(s){if(!s)return false;const d=parseDate(s);return d&&d>=getWeekStart()&&d<=getWeekEnd()}
+function getDayOfYear(){const n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/86400000)}
+function escapeHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function getStageIndex(k){return PAPER_STAGES.findIndex(s=>s.key===k)}
+function getStageInfo(k){return PAPER_STAGES.find(s=>s.key===k)||PAPER_STAGES[0]}
+function actLabel(v){const a=ACTIVITY_TYPES.find(t=>t.value===v);return a?a.label:v}
+function actColor(v){const a=ACTIVITY_TYPES.find(t=>t.value===v);return a?a.color:'#64748b'}
+
+// ===== Storage (multi-layer: localStorage + IndexedDB fallback) =====
+const IDB_NAME='wb_research_db';
+const IDB_STORE='kv';
+let storageOK=false;       // true if at least one storage backend works
+let storageType='none';    // 'localStorage' | 'indexedDB' | 'none'
+let saveTimer=null;
+
+function idbOpen(){
+  return new Promise((resolve,reject)=>{
+    try{
+      const req=indexedDB.open(IDB_NAME,1);
+      req.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE)};
+      req.onsuccess=e=>resolve(e.target.result);
+      req.onerror=e=>reject(e.target.error);
+    }catch(e){reject(e)}
+  });
+}
+async function idbGet(key){
+  try{const db=await idbOpen();return await new Promise((resolve,reject)=>{const tx=db.transaction(IDB_STORE,'readonly');const req=tx.objectStore(IDB_STORE).get(key);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}catch(e){return null}
+}
+async function idbSet(key,val){
+  try{const db=await idbOpen();return await new Promise((resolve,reject)=>{const tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).put(val,key);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error)})}catch(e){return false}
+}
+
+// Save — writes to localStorage AND IndexedDB (dual write)
+function saveState(){
+  // 静默模式（__csSilent 由云同步模块设置）：应用云端数据时不更新时间戳、不触发云推送
+  if(!window.__csSilent){state.updatedAt=Date.now();}
+  const data=JSON.stringify(state);
+  let lsOK=false;
+  try{localStorage.setItem(STORAGE_KEY,data);lsOK=true;storageType='localStorage';storageOK=true}catch(e){}
+  // Always also write to IndexedDB (independent partition in some browsers)
+  idbSet(STORAGE_KEY,data).then(ok=>{if(ok){if(!lsOK){storageType='indexedDB';storageOK=true}updateSyncBadge()}}).catch(()=>{});
+  if(!lsOK){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      if(!storageOK){
+        showToast('⚠️ 浏览器存储受限，请点击「导出备份」保存数据','error');
+        updateSyncBadge();
+      }
+    },500);
+  }
+  updateSyncBadge();
+}
+
+// Load best (newest) state across both backends, prefer newer updatedAt
+async function loadBestState(){
+  let best=null,bestTs=-1,src='none';
+  try{
+    const s=localStorage.getItem(STORAGE_KEY);
+    if(s){const d=JSON.parse(s);const ts=d.updatedAt||0;if(ts>bestTs){best=d;bestTs=ts;src='localStorage'}}
+  }catch(e){}
+  try{
+    const s=await idbGet(STORAGE_KEY);
+    if(s){const d=JSON.parse(s);const ts=d.updatedAt||0;if(ts>bestTs){best=d;bestTs=ts;src='indexedDB'}}
+  }catch(e){}
+  return {best,src};
+}
+function updateSyncBadge(){
+  const dot=document.getElementById('syncDot');
+  const txt=document.getElementById('syncText');
+  if(!dot||!txt)return;
+  if(storageOK){
+    dot.style.background=storageType==='indexedDB'?'#f59e0b':'var(--green)';
+    txt.textContent=storageType==='indexedDB'?'已存 (IndexedDB)':'已存 (本地)';
+  }else{
+    dot.style.background='var(--red)';
+    txt.textContent='存储不可用';
+  }
+}
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='research-workspace-'+todayStr()+'.json';a.click();showToast('已导出备份文件')}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);['todos','ideas','projects','papers','fitness','englishLog','weeklyNotes','literature','experiments','meetings','timeLogs'].forEach(k=>{if(!d[k])d[k]=[]});if(!d.settings)d.settings={lastExportReminder:''};state=d;saveState();render();showToast('导入成功')}catch(err){showToast('导入失败：文件格式错误','error')}};r.readAsText(f);e.target.value=''}
+function getTotalCount(){return state.todos.length+state.ideas.length+state.projects.length+state.papers.length+state.fitness.length+state.literature.length+state.experiments.length+state.meetings.length}
+function checkReminder(){const c=getTotalCount();const b=document.getElementById('reminderBanner');if(c>=20&&state.settings.lastExportReminder!==todayStr()){state.settings.lastExportReminder=todayStr();saveState();b.innerHTML='<div class="reminder-banner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>数据已积累 '+c+' 条，建议导出一次备份<button class="btn btn-sm btn-primary" onclick="exportData()">立即导出</button></div>'}else{b.innerHTML=''}}
+
+// ===== Sample Data =====
+function generateSampleData(){
+  const t=todayStr(),tm=tomorrowStr(),y=fmtDate(addDays(new Date(),-1)),y2=fmtDate(addDays(new Date(),-2)),nw=fmtDate(addDays(new Date(),5)),lw=fmtDate(addDays(new Date(),-3)),lw2=fmtDate(addDays(new Date(),-5));
+  const p1=uid(),p2=uid();
+  return{
+    todos:[
+      {id:uid(),title:'完成论文初稿的实验部分',priority:'P0',deadline:y2,completed:false,projectId:p1,createdAt:lw,deferCount:1,originalDeadline:y2,completedDate:null,estimatedTime:120,subtasks:[{id:uid(),text:'整理实验数据表格',done:true},{id:uid(),text:'绘制对比图',done:false},{id:uid(),text:'撰写实验分析',done:false}]},
+      {id:uid(),title:'回复审稿人意见（Reviewer 2）',priority:'P0',deadline:t,completed:false,projectId:p2,createdAt:y,deferCount:0,originalDeadline:t,completedDate:null,estimatedTime:90,subtasks:[]},
+      {id:uid(),title:'准备组会PPT（本周进展汇报）',priority:'P1',deadline:t,completed:false,projectId:null,createdAt:y,deferCount:0,originalDeadline:t,completedDate:null,estimatedTime:60,subtasks:[]},
+      {id:uid(),title:'阅读3篇GNN相关文献',priority:'P1',deadline:tm,completed:false,projectId:p1,createdAt:t,deferCount:0,originalDeadline:tm,completedDate:null,estimatedTime:90,subtasks:[]},
+      {id:uid(),title:'提交ICML会议摘要',priority:'P0',deadline:nw,completed:false,projectId:p2,createdAt:t,deferCount:0,originalDeadline:nw,completedDate:null,estimatedTime:30,subtasks:[]},
+      {id:uid(),title:'整理实验数据并生成图表',priority:'P2',deadline:y2,completed:true,projectId:p1,createdAt:lw,deferCount:0,originalDeadline:y2,completedDate:y2,estimatedTime:60,subtasks:[]}
+    ],
+    ideas:[
+      {id:uid(),content:'可以尝试用图神经网络来做蛋白质结构预测，结合已有的物理约束来提升准确性',tags:['研究方向','AI'],priority:'high',createdAt:lw2},
+      {id:uid(),content:'实验对照组的样本量可能不够，考虑增加一组15人的对照组来提升统计效力',tags:['实验设计'],priority:'medium',createdAt:lw},
+      {id:uid(),content:'论文Introduction部分可以引用Smith 2023的工作作为切入点，他们的发现正好支撑我们的研究动机',tags:['写作','文献'],priority:'low',createdAt:y}
+    ],
+    projects:[
+      {id:p1,name:'蛋白质结构预测研究',currentStep:'实验数据收集与模型调优',nextStep:'撰写实验结果部分',blocker:'GPU算力不足，部分大规模实验排队中',status:'active',createdAt:'2026-06-01'},
+      {id:p2,name:'ICML会议论文',currentStep:'审稿意见回复与论文修改',nextStep:'修改后重新提交',blocker:'',status:'active',createdAt:'2026-07-15'}
+    ],
+    papers:[
+      {id:uid(),title:'Graph Neural Networks for Protein Structure Prediction',stage:'drafting',progress:65,deadline:'2026-09-15',venue:'ICML 2027',coAuthors:'张三, 李四',doi:'',notes:'实验部分待补充，方法论已完成',createdAt:'2026-06-01'},
+      {id:uid(),title:'A Survey of Deep Learning Methods in Bioinformatics',stage:'reviewing',progress:92,deadline:'',venue:'Bioinformatics',coAuthors:'王五',doi:'',notes:'已投稿至Bioinformatics期刊，等待审稿结果',createdAt:'2026-05-01'}
+    ],
+    fitness:[
+      {id:uid(),date:y,type:'strength',items:['俯卧撑 3x15','哑铃划船 3x12','平板支撑 3x30s'],duration:45,notes:'状态不错'},
+      {id:uid(),date:lw,type:'football',items:['足球比赛 60分钟','热身 10分钟','拉伸 10分钟'],duration:80,notes:'5人制，进了2球'},
+      {id:uid(),date:lw2,type:'flexibility',items:['瑜伽 30分钟','泡沫轴放松 15分钟'],duration:45,notes:'拉伸后肩颈舒服多了'}
+    ],
+    englishLog:[],
+    weeklyNotes:[],
+    literature:[
+      {id:uid(),title:'Attention Is All You Need',authors:'Vaswani et al.',year:2017,venue:'NeurIPS',doi:'10.5555/3295222.3295349',status:'read',rating:5,tags:['深度学习','Transformer'],notes:'Transformer架构开山之作，self-attention机制是核心创新',addedAt:lw2},
+      {id:uid(),title:'Protein Structure Prediction with AlphaFold',authors:'Jumper et al.',year:2021,venue:'Nature',doi:'',status:'read',rating:5,tags:['蛋白质','AI'],notes:'AlphaFold2革命性突破，Evoformer和结构模块是关键',addedAt:lw},
+      {id:uid(),title:'Graph Neural Networks: A Review of Methods and Applications',authors:'Zhou et al.',year:2020,venue:'AI Open',doi:'',status:'reading',rating:4,tags:['GNN','综述'],notes:'GNN综述，正在读消息传递机制部分',addedAt:y},
+      {id:uid(),title:'Deep Learning for Protein Design',authors:'Watson et al.',year:2023,venue:'Science',doi:'',status:'unread',rating:0,tags:['蛋白质','深度学习'],notes:'',addedAt:t}
+    ],
+    experiments:[
+      {id:uid(),title:'GNN模型不同层数对比实验',date:y,projectId:p1,type:'experiment',params:'模型层数: 3/5/7/9\n隐藏维度: 256\n学习率: 0.001\n训练轮数: 100',results:'5层效果最佳，7层后过拟合\n验证集准确率: 3层89.2%, 5层92.1%, 7层91.8%',status:'completed',notes:'5层为最优选择',createdAt:y},
+      {id:uid(),title:'蛋白质数据集预处理流程测试',date:lw,projectId:p1,type:'analysis',params:'数据集: PDB\n序列长度过滤: <1024\n同源性阈值: 30%',results:'过滤后剩12,847条数据',status:'completed',notes:'',createdAt:lw},
+      {id:uid(),title:'消融实验：去除物理约束模块',date:tm,projectId:p1,type:'experiment',params:'去除物理约束模块\n其他参数同基线模型',results:'',status:'planned',notes:'验证物理约束对模型性能的贡献',createdAt:t}
+    ],
+    meetings:[
+      {id:uid(),title:'组会：本周进展汇报',type:'group',date:y,attendees:'导师, 张三, 李四, 王五',notes:'1. 汇报了GNN模型实验结果\n2. 讨论了5层网络为最优选择\n3. 导师建议增加消融实验\n4. 下周准备投稿材料',actions:[{id:uid(),text:'完成消融实验设计',done:false},{id:uid(),text:'更新实验文档',done:true}],createdAt:y},
+      {id:uid(),title:'导师1v1：论文修改讨论',type:'advisor',date:lw,attendees:'导师',notes:'导师指出Introduction需要加强动机论述\n建议增加与Smith 2023工作的对比\nRelated Work需要补充近2年GNN在蛋白质领域的应用',actions:[{id:uid(),text:'修改Introduction动机部分',done:false},{id:uid(),text:'补充Related Work',done:false}],createdAt:lw}
+    ],
+    timeLogs:[
+      {id:uid(),date:y,startTime:'09:00',duration:25,projectId:p1,activityType:'research'},
+      {id:uid(),date:y,startTime:'10:00',duration:50,projectId:p1,activityType:'writing'},
+      {id:uid(),date:y,startTime:'14:00',duration:25,projectId:p2,activityType:'reading'},
+      {id:uid(),date:lw,startTime:'09:30',duration:50,projectId:p1,activityType:'analysis'},
+      {id:uid(),date:lw,startTime:'14:00',duration:25,projectId:null,activityType:'meeting'},
+      {id:uid(),date:lw2,startTime:'10:00',duration:50,projectId:p1,activityType:'research'},
+      {id:uid(),date:lw2,startTime:'15:00',duration:25,projectId:p2,activityType:'writing'}
+    ],
+    settings:{lastExportReminder:'',isSample:true}
+  }
+}
+
+// ===== Navigation =====
+function renderNav(){
+  const oc=state.todos.filter(isOverdue).length;
+  const bc=state.projects.filter(p=>p.blocker&&p.status==='active').length;
+  const rc=state.literature.filter(l=>l.status==='reading').length;
+  document.getElementById('navList').innerHTML=NAV_ITEMS.map(item=>{
+    let badge='';
+    if(item.id==='today'&&(oc+bc)>0)badge='<span class="nav-badge">'+(oc+bc)+'</span>';
+    if(item.id==='literature'&&rc>0)badge='<span class="nav-badge" style="background:var(--blue)">'+rc+'</span>';
+    if(item.id==='timer'&&timer.running)badge='<span class="nav-timer-dot"></span>';
+    return '<div class="nav-item '+(currentView===item.id?'active':'')+'" onclick="switchView(\''+item.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+item.icon+'</svg><span>'+item.label+'</span>'+badge+'</div>';
+  }).join('');
+}
+function switchView(id){
+  currentView=id;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  renderNav();renderView(id);
+  if(window.innerWidth<=768)toggleSidebar(false);
+}
+function toggleSidebar(force){
+  const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');
+  const show=force!==undefined?force:!sb.classList.contains('show');
+  sb.classList.toggle('show',show);ov.classList.toggle('show',show);
+}
+
+// ===== Modal/Toast =====
+function showModal(title,body,onConfirm){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').textContent=body;
+  document.getElementById('modalOverlay').classList.add('show');
+  document.getElementById('modalConfirm').onclick=function(){hideModal();onConfirm()};
+}
+function hideModal(){document.getElementById('modalOverlay').classList.remove('show')}
+let toastTimer;
+function showToast(msg,type){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast show'+(type?' '+type:'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ===== Charts =====
+function pieChart(data,colors){
+  const total=data.reduce((s,d)=>s+d.value,0);
+  if(total===0)return '<div style="text-align:center;color:var(--muted);padding:20px">暂无数据</div>';
+  const r=60,cx=70,cy=70;let angle=-90,paths='';
+  data.forEach((d,i)=>{
+    if(d.value===0)return;
+    const sweep=d.value/total*360;
+    const sA=angle*Math.PI/180,eA=(angle+sweep)*Math.PI/180;
+    const x1=cx+r*Math.cos(sA),y1=cy+r*Math.sin(sA);
+    const x2=cx+r*Math.cos(eA),y2=cy+r*Math.sin(eA);
+    const large=sweep>180?1:0;
+    paths+='<path d="M'+cx+','+cy+' L'+x1+','+y1+' A'+r+','+r+' 0 '+large+',1 '+x2+','+y2+' Z" fill="'+colors[i]+'"/>';
+    angle+=sweep;
+  });
+  const labels=data.map((d,i)=>'<div style="display:flex;align-items:center;gap:4px;font-size:12px;margin:2px 0"><span style="width:10px;height:10px;border-radius:2px;background:'+colors[i]+';display:inline-block"></span>'+d.label+': '+d.value+'</div>').join('');
+  return '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><svg width="140" height="140" viewBox="0 0 140 140">'+paths+'<circle cx="'+cx+'" cy="'+cy+'" r="32" fill="#fff"/><text x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle" font-size="22" font-weight="700" fill="#1e293b">'+total+'</text><text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="10" fill="#64748b">总计</text></svg><div>'+labels+'</div></div>';
+}
+function barChart(data){
+  if(!data.length||data.every(d=>d.value===0))return '<div style="text-align:center;color:var(--muted);padding:20px">暂无数据</div>';
+  const max=Math.max(...data.map(d=>d.value),1);
+  const bw=50,gap=16,chartH=120;
+  const bars=data.map((d,i)=>{
+    const h=d.value/max*chartH;const x=i*(bw+gap)+gap;
+    return '<rect x="'+x+'" y="'+(chartH-h+10)+'" width="'+bw+'" height="'+h+'" fill="'+(d.color||'#0d9488')+'" rx="4"/><text x="'+(x+bw/2)+'" y="'+(chartH-h+5)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">'+d.value+'</text><text x="'+(x+bw/2)+'" y="'+(chartH+28)+'" text-anchor="middle" font-size="10" fill="#64748b">'+d.label+'</text>';
+  }).join('');
+  const w=data.length*(bw+gap)+gap;
+  return '<svg width="'+w+'" height="'+(chartH+40)+'" viewBox="0 0 '+w+' '+(chartH+40)+'">'+bars+'</svg>';
+}
+function progressRing(percent,size,stroke,color){
+  const r=(size-stroke)/2,cx=size/2,cy=size/2;
+  const circ=2*Math.PI*r,offset=circ*(1-percent/100);
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#e2e8f0" stroke-width="'+stroke+'"/><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+(color||'#0d9488')+'" stroke-width="'+stroke+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 '+cx+' '+cy+')" style="transition:stroke-dashoffset .5s"/><text x="'+cx+'" y="'+(cy+1)+'" text-anchor="middle" dominant-baseline="middle" font-size="'+(size*0.22)+'" font-weight="700" fill="#1e293b">'+percent+'%</text></svg>';
+}
+function heatmap(data){
+  const weeks=8,cells=[];
+  for(let w=0;w<weeks;w++){for(let d=0;d<7;d++){
+    const date=fmtDate(addDays(new Date(),-(weeks-w-1)*7-(6-d)));
+    const entry=data.find(f=>f.date===date);
+    let level=0;if(entry)level=Math.min(4,Math.ceil(entry.duration/15));
+    cells.push('<div class="heatmap-cell '+(level>0?'l'+level:'')+'" title="'+date+(entry?': '+entry.items.join(', '):'')+'"></div>');
+  }}
+  return '<div style="display:flex;gap:3px;flex-wrap:wrap">'+cells.join('')+'</div><div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);margin-top:4px"><span>少</span><div class="heatmap-cell"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l2"></div><div class="heatmap-cell l3"></div><div class="heatmap-cell l4"></div><span>多</span></div>';
+}
+function timerCircle(remaining,total,mode){
+  const percent=remaining/total;
+  const size=200,stroke=12,r=(size-stroke)/2;
+  const circ=2*Math.PI*r,offset=circ*(1-percent);
+  const color=mode==='work'?'#0d9488':'#22c55e';
+  const mins=Math.floor(remaining/60),secs=remaining%60;
+  const tt=String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'"><circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="#e2e8f0" stroke-width="'+stroke+'"/><circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="'+stroke+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 '+(size/2)+' '+(size/2)+')" style="transition:stroke-dashoffset 1s linear"/><text x="'+(size/2)+'" y="'+(size/2-5)+'" text-anchor="middle" font-size="42" font-weight="700" fill="#1e293b">'+tt+'</text><text x="'+(size/2)+'" y="'+(size/2+25)+'" text-anchor="middle" font-size="14" fill="#64748b">'+(mode==='work'?'专注中':'休息中')+'</text></svg>';
+}
+
+// ===== Render: Urgent =====
+function renderUrgent(){
+  const ot=state.todos.filter(isOverdue).sort((a,b)=>(a.deadline||'').localeCompare(b.deadline||''));
+  const bp=state.projects.filter(p=>p.blocker&&p.status==='active');
+  let html='';
+  if(ot.length===0&&bp.length===0){
+    html='<div class="urgent-title" style="color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>今天没有逾期事项，状态良好</div>';
+  }else{
+    html='<div class="urgent-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>今天要处理的</div>';
+    ot.forEach(t=>{
+      const days=Math.abs(daysUntil(t.deadline));
+      const proj=t.projectId?state.projects.find(p=>p.id===t.projectId):null;
+      html+='<div class="urgent-item"><div class="urgent-item-info"><div class="urgent-item-title">'+escapeHtml(t.title)+'</div><div class="urgent-item-meta"><span class="badge badge-overdue">逾期'+days+'天</span><span class="badge badge-'+t.priority.toLowerCase()+'">'+t.priority+'</span>'+(proj?'<span>· '+escapeHtml(proj.name)+'</span>':'')+(t.deferCount>0?'<span style="color:var(--amber)">已顺延'+t.deferCount+'次</span>':'')+'</div></div><div class="urgent-item-actions"><button class="btn btn-sm btn-outline" onclick="deferTodo(\''+t.id+'\')">顺延到明天</button><button class="btn btn-sm btn-primary" onclick="toggleTodo(\''+t.id+'\')">完成</button></div></div>';
+    });
+    bp.forEach(p=>{
+      const lt=state.todos.filter(t=>t.projectId===p.id);
+      const dc=lt.filter(t=>t.completed).length;
+      html+='<div class="urgent-item"><div class="urgent-item-info"><div class="urgent-item-title">'+escapeHtml(p.name)+' — 卡点</div><div class="urgent-item-meta"><span class="badge badge-overdue">阻塞中</span><span>'+escapeHtml(p.blocker)+'</span><span>· 关联待办 '+dc+'/'+lt.length+'</span></div></div><div class="urgent-item-actions"><button class="btn btn-sm btn-outline" onclick="switchView(\'projects\')">查看项目</button></div></div>';
+    });
+  }
+  document.getElementById('urgentSection').innerHTML=html;
+}
+
+// ===== Render: Today (Enhanced) =====
+function renderToday(){
+  const tt=state.todos.filter(t=>!t.completed&&(t.deadline===todayStr()||isOverdue(t)));
+  const dt=state.todos.filter(t=>t.completed&&t.completedDate===todayStr());
+  const ov=state.todos.filter(isOverdue);
+  const plan=FITNESS_PLAN[new Date().getDay()];
+  const lesson=ENGLISH_LESSONS[getDayOfYear()%ENGLISH_LESSONS.length];
+  const tf=state.timeLogs.filter(l=>l.date===todayStr()).reduce((s,l)=>s+l.duration,0);
+  const rq=state.literature.filter(l=>l.status==='reading'||l.status==='unread').slice(0,3);
+  const ud=state.papers.filter(p=>p.deadline&&daysUntil(p.deadline)>=0&&daysUntil(p.deadline)<=14).sort((a,b)=>daysUntil(a.deadline)-daysUntil(b.deadline));
+  const wd=['日','一','二','三','四','五','六'][new Date().getDay()];
+  let h='<div class="view-header"><div><div class="view-title">今日总览</div><div class="view-subtitle">'+todayStr()+' · 星期'+wd+'</div></div></div>';
+  h+='<div class="stats-grid"><div class="stat-card danger"><div class="stat-value">'+ov.length+'</div><div class="stat-label">逾期任务</div></div><div class="stat-card"><div class="stat-value">'+tt.length+'</div><div class="stat-label">今日待办</div></div><div class="stat-card success"><div class="stat-value">'+dt.length+'</div><div class="stat-label">今日完成</div></div><div class="stat-card blue"><div class="stat-value">'+tf+'</div><div class="stat-label">专注(分钟)</div></div></div>';
+  h+='<div class="card"><div class="section-label">今日待办</div>';
+  if(tt.length===0){h+='<div class="empty-state"><p>今天没有待办任务</p></div>'}
+  else{h+=tt.sort((a,b)=>{const o={P0:0,P1:1,P2:2};return o[a.priority]-o[b.priority]}).map(renderTodoItem).join('')}
+  h+='<button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="switchView(\'todos\')">查看全部待办</button></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  h+='<div class="card"><div class="section-label">阅读队列</div>';
+  if(rq.length===0){h+='<div style="color:var(--muted);font-size:13px;padding:8px 0">暂无待读文献</div>'}
+  else{rq.forEach(l=>{h+='<div class="reading-queue-item"><span class="lit-status lit-status-'+l.status+'">'+(l.status==='reading'?'在读':'待读')+'</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(l.title)+'</span><button class="btn-ghost" onclick="switchView(\'literature\')">→</button></div>'})}
+  h+='<button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="switchView(\'literature\')">管理文献</button></div>';
+  h+='<div class="card"><div class="section-label">近期截止</div>';
+  if(ud.length===0){h+='<div style="color:var(--muted);font-size:13px;padding:8px 0">暂无近期截止</div>'}
+  else{ud.forEach(p=>{const d=daysUntil(p.deadline);h+='<div class="deadline-item"><span class="'+(d<=3?'deadline-urgent':d<=7?'deadline-soon':'')+'" style="min-width:50px">'+(d===0?'今天':d+'天')+'</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(p.title)+'</span><span style="font-size:11px;color:var(--muted)">'+escapeHtml(p.venue||'')+'</span></div>'})}
+  h+='</div></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">';
+  h+='<div class="card"><div class="section-label">今日健身</div>'+(plan.rest?'<div style="font-weight:700;color:var(--muted);margin:4px 0">休息日</div><div style="font-size:12px;color:var(--muted)">今天建议休息恢复，不强制打卡</div>':'<div style="font-weight:700;color:var(--teal-d);margin:4px 0">'+plan.title+'</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">建议时长 '+plan.duration+'分钟 · '+fitTypeLabel(plan.type)+'</div>'+plan.items.map(i=>'<div style="font-size:13px;padding:2px 0">• '+i+'</div>').join(''))+'<button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="switchView(\'fitness\')">'+(plan.rest?'去打卡':'去打卡')+'</button></div>';
+  var engCat=ENGLISH_CATS.find(function(c){return c.id===lesson.cat});h+='<div class="card"><div class="section-label">今日英语</div>'+(engCat?'<span class="eng-cat-badge eng-cat-'+engCat.id+'">'+engCat.label+'</span> ':'')+'<div style="font-weight:700;color:var(--blue);margin:4px 0">'+escapeHtml(lesson.title)+'</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">'+getEnglishTypeLabel(lesson.type)+'</div><div style="font-size:13px"><span style="font-weight:700;color:var(--blue)">'+escapeHtml(lesson.items[0].term)+'</span>'+(lesson.items[0].phonetic?'<span style="font-family:Georgia,serif;color:var(--teal-d);font-size:12px"> /'+escapeHtml(lesson.items[0].phonetic)+'/</span>':'')+' — '+escapeHtml(lesson.items[0].def)+'</div><div style="font-size:12px;color:var(--muted);font-style:italic;margin-top:4px">'+escapeHtml(lesson.items[0].example)+'</div><button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="switchView(\'english\')">学习更多</button></div>';
+  h+='</div>';
+  document.getElementById('view-today').innerHTML=h;
+}
+
+// ===== Render: Todos (Enhanced) =====
+function renderTodoItem(t){
+  const ov=isOverdue(t);const proj=t.projectId?state.projects.find(p=>p.id===t.projectId):null;
+  const days=daysUntil(t.deadline);let dl='';
+  if(t.deadline){if(days<0)dl='逾期'+Math.abs(days)+'天';else if(days===0)dl='今天';else if(days===1)dl='明天';else dl=t.deadline}
+  let sh='';
+  if(t.subtasks&&t.subtasks.length>0){
+    const dn=t.subtasks.filter(s=>s.done).length;
+    sh='<div class="subtask-list"><div style="font-size:11px;color:var(--muted);margin-bottom:2px">子任务 '+dn+'/'+t.subtasks.length+'</div>'+t.subtasks.map(s=>'<div class="subtask-item"><div class="todo-checkbox '+(s.done?'checked':'')+'" onclick="event.stopPropagation();toggleSubtask(\''+t.id+'\',\''+s.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><span class="'+(s.done?'done-text':'')+'">'+escapeHtml(s.text)+'</span></div>').join('')+'</div>';
+  }
+  return '<div class="todo-item '+(ov?'overdue':'')+(t.completed?' done':'')+'"><div class="todo-checkbox '+(t.completed?'checked':'')+'" onclick="toggleTodo(\''+t.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><div class="todo-content"><div class="todo-title">'+escapeHtml(t.title)+'</div><div class="todo-meta"><span class="badge badge-'+t.priority.toLowerCase()+'">'+t.priority+'</span>'+(t.deadline?'<span class="badge '+(ov?'badge-overdue':'')+'">'+dl+'</span>':'')+(proj?'<span>· '+escapeHtml(proj.name)+'</span>':'')+(t.estimatedTime?'<span>⏱'+t.estimatedTime+'min</span>':'')+(t.deferCount>0?'<span style="color:var(--amber)">顺延'+t.deferCount+'次</span>':'')+'</div>'+sh+'</div><div class="todo-actions">'+(!t.completed&&ov?'<button class="btn btn-sm btn-outline" onclick="deferTodo(\''+t.id+'\')">顺延</button>':'')+'<button class="btn-ghost" onclick="deleteTodo(\''+t.id+'\')">删除</button></div></div>';
+}
+function renderTodos(){
+  const active=state.todos.filter(t=>!t.completed);
+  const done=state.todos.filter(t=>t.completed);
+  const ov=active.filter(isOverdue);
+  const today=active.filter(t=>t.deadline===todayStr()&&!isOverdue(t));
+  const tmr=active.filter(t=>t.deadline===tomorrowStr());
+  const fut=active.filter(t=>t.deadline&&daysUntil(t.deadline)>1);
+  const nd=active.filter(t=>!t.deadline);
+  let h='<div class="view-header"><div><div class="view-title">待办管理</div><div class="view-subtitle">按日期分组 · 逾期标红 · 支持子任务和预估时间</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:200px"><input type="text" id="todoTitle" placeholder="输入任务标题..." onkeydown="if(event.key===\'Enter\')addTodo()"></div><div class="form-group"><select id="todoPriority"><option value="P0">P0 紧急</option><option value="P1" selected>P1 重要</option><option value="P2">P2 一般</option></select></div><div class="form-group"><input type="date" id="todoDeadline" value="'+todayStr()+'"></div><div class="form-group"><select id="todoProject"><option value="">不关联项目</option>'+state.projects.map(p=>'<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>').join('')+'</select></div><div class="form-group"><input type="number" id="todoEstTime" placeholder="预估(分)" min="0" style="width:90px"></div><button class="btn btn-primary" onclick="addTodo()">添加</button></div><div class="form-row" style="margin-bottom:0"><div class="form-group" style="flex:1"><input type="text" id="todoSubtasks" placeholder="子任务（逗号分隔，可选）"></div></div></div>';
+  if(ov.length)h+='<div class="date-group-header overdue-header">逾期未完成 ('+ov.length+')</div>'+ov.map(renderTodoItem).join('');
+  if(today.length)h+='<div class="date-group-header">今天 ('+today.length+')</div>'+today.map(renderTodoItem).join('');
+  if(tmr.length)h+='<div class="date-group-header">明天 ('+tmr.length+')</div>'+tmr.map(renderTodoItem).join('');
+  if(fut.length)h+='<div class="date-group-header">未来 ('+fut.length+')</div>'+fut.map(renderTodoItem).join('');
+  if(nd.length)h+='<div class="date-group-header">无截止日期 ('+nd.length+')</div>'+nd.map(renderTodoItem).join('');
+  if(done.length){h+='<div class="date-group-header">已完成 ('+done.length+')</div>';done.slice(-10).reverse().map(renderTodoItem).forEach(t=>h+=t);if(done.length>10)h+='<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">仅显示最近10条</div>'}
+  if(!active.length&&!done.length)h+='<div class="empty-state"><p>暂无待办</p></div>';
+  document.getElementById('view-todos').innerHTML=h;
+}
+
+// ===== Render: Literature (NEW) =====
+function renderLiterature(){
+  const allTags=[...new Set(state.literature.flatMap(l=>l.tags))];
+  let filtered=state.literature;
+  if(litFilter.status)filtered=filtered.filter(l=>l.status===litFilter.status);
+  if(litFilter.tag)filtered=filtered.filter(l=>l.tags.includes(litFilter.tag));
+  let h='<div class="view-header"><div><div class="view-title">文献管理</div><div class="view-subtitle">追踪阅读进度 · 评分笔记 · 标签筛选</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:200px"><input type="text" id="litTitle" placeholder="论文标题"></div><div class="form-group"><input type="text" id="litAuthors" placeholder="作者" style="width:140px"></div><div class="form-group"><input type="number" id="litYear" placeholder="年份" style="width:80px"></div><div class="form-group"><input type="text" id="litVenue" placeholder="期刊/会议" style="width:120px"></div></div><div class="form-row"><div class="form-group"><select id="litStatus"><option value="unread">待读</option><option value="reading">在读</option><option value="read">已读</option></select></div><div class="form-group" style="flex:1"><input type="text" id="litTags" placeholder="标签（逗号分隔）"></div><div class="form-group" style="flex:1"><input type="text" id="litDoi" placeholder="DOI（可选）"></div><button class="btn btn-primary" onclick="addLiterature()">添加</button></div></div>';
+  const un=state.literature.filter(l=>l.status==='unread').length;
+  const rg=state.literature.filter(l=>l.status==='reading').length;
+  const rd=state.literature.filter(l=>l.status==='read').length;
+  h+='<div class="stats-grid"><div class="stat-card"><div class="stat-value">'+un+'</div><div class="stat-label">待读</div></div><div class="stat-card blue"><div class="stat-value">'+rg+'</div><div class="stat-label">在读</div></div><div class="stat-card success"><div class="stat-value">'+rd+'</div><div class="stat-label">已读</div></div></div>';
+  h+='<div class="lit-filter-bar"><span class="badge '+(litFilter.status===null?'badge-done':'badge-tag')+'" onclick="litFilter.status=null;renderLiterature()">全部</span><span class="badge '+(litFilter.status==='unread'?'badge-done':'badge-tag')+'" onclick="litFilter.status=\'unread\';renderLiterature()">待读</span><span class="badge '+(litFilter.status==='reading'?'badge-done':'badge-tag')+'" onclick="litFilter.status=\'reading\';renderLiterature()">在读</span><span class="badge '+(litFilter.status==='read'?'badge-done':'badge-tag')+'" onclick="litFilter.status=\'read\';renderLiterature()">已读</span>';
+  if(allTags.length){h+='<span style="color:var(--muted);font-size:12px;margin-left:8px">标签：</span>';allTags.forEach(tg=>{h+='<span class="badge '+(litFilter.tag===tg?'badge-done':'badge-tag')+'" onclick="litFilter.tag='+(litFilter.tag===tg?'null':"'"+tg+"'")+';renderLiterature()">'+tg+'</span>'})}
+  h+='</div>';
+  if(filtered.length===0){h+='<div class="empty-state"><p>暂无文献记录</p></div>'}
+  filtered.sort((a,b)=>b.addedAt.localeCompare(a.addedAt)).forEach(l=>{
+    let stars='';for(let i=1;i<=5;i++)stars+='<span class="star '+(i<=l.rating?'star-filled':'')+'" onclick="setRating(\''+l.id+'\','+i+')">★</span>';
+    h+='<div class="lit-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div style="flex:1;min-width:0"><div class="lit-title">'+escapeHtml(l.title)+'</div><div class="lit-authors">'+escapeHtml(l.authors||'')+(l.year?' · '+l.year:'')+'</div><div class="lit-venue">'+escapeHtml(l.venue||'')+(l.doi?' · DOI: '+escapeHtml(l.doi):'')+'</div></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm btn-outline" onclick="cycleLitStatus(\''+l.id+'\')">'+(l.status==='unread'?'开始读':l.status==='reading'?'读完':'重读')+'</button><button class="btn-ghost" onclick="deleteLiterature(\''+l.id+'\')">删除</button></div></div><div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap"><span class="lit-status lit-status-'+l.status+'">'+(l.status==='unread'?'待读':l.status==='reading'?'在读':'已读')+'</span><span class="lit-stars">'+stars+'</span>'+l.tags.map(tg=>'<span class="badge badge-tag" onclick="litFilter.tag=\''+tg+'\';renderLiterature()">'+tg+'</span>').join('')+'</div>'+(l.notes?'<div class="lit-notes">'+escapeHtml(l.notes)+'</div>':'')+'<button class="btn-ghost" onclick="editLitNotes(\''+l.id+'\')">'+(l.notes?'编辑笔记':'添加笔记')+'</button></div>';
+  });
+  document.getElementById('view-literature').innerHTML=h;
+}
+
+// ===== Render: Experiments (NEW) =====
+function renderExperiments(){
+  let filtered=state.experiments;
+  if(expFilter.project)filtered=filtered.filter(e=>e.projectId===expFilter.project);
+  if(expFilter.status)filtered=filtered.filter(e=>e.status===expFilter.status);
+  const tl={experiment:'实验',simulation:'模拟',survey:'调研',analysis:'分析'};
+  const sl={planned:'计划中',running:'进行中',completed:'已完成',failed:'失败'};
+  let h='<div class="view-header"><div><div class="view-title">实验记录</div><div class="view-subtitle">数字实验笔记本 · 参数结果 · 关联项目</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:150px"><input type="text" id="expTitle" placeholder="实验名称"></div><div class="form-group"><input type="date" id="expDate" value="'+todayStr()+'" style="width:140px"></div><div class="form-group"><select id="expProject"><option value="">不关联项目</option>'+state.projects.map(p=>'<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>').join('')+'</select></div><div class="form-group"><select id="expType">'+Object.entries(tl).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('')+'</select></div><div class="form-group"><select id="expStatus">'+Object.entries(sl).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('')+'</select></div><button class="btn btn-primary" onclick="addExperiment()">添加</button></div><div class="form-row" style="margin-bottom:0"><div class="form-group" style="flex:1"><textarea id="expParams" placeholder="实验参数（每行一个）" style="min-height:50px"></textarea></div><div class="form-group" style="flex:1"><textarea id="expResults" placeholder="实验结果（可选）" style="min-height:50px"></textarea></div></div></div>';
+  h+='<div class="lit-filter-bar"><span class="badge '+(expFilter.project===null?'badge-done':'badge-tag')+'" onclick="expFilter.project=null;renderExperiments()">全部项目</span>';
+  state.projects.forEach(p=>{h+='<span class="badge '+(expFilter.project===p.id?'badge-done':'badge-tag')+'" onclick="expFilter.project='+(expFilter.project===p.id?'null':"'"+p.id+"'")+';renderExperiments()">'+escapeHtml(p.name)+'</span>'});
+  h+='<span style="color:var(--muted);font-size:12px;margin-left:8px">状态：</span><span class="badge '+(expFilter.status===null?'badge-done':'badge-tag')+'" onclick="expFilter.status=null;renderExperiments()">全部</span>';
+  Object.entries(sl).forEach(([k,v])=>{h+='<span class="badge '+(expFilter.status===k?'badge-done':'badge-tag')+'" onclick="expFilter.status=\''+k+'\';renderExperiments()">'+v+'</span>'});
+  h+='</div>';
+  if(filtered.length===0){h+='<div class="empty-state"><p>暂无实验记录</p></div>'}
+  filtered.sort((a,b)=>b.date.localeCompare(a.date)).forEach(e=>{
+    const proj=e.projectId?state.projects.find(p=>p.id===e.projectId):null;
+    h+='<div class="exp-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div style="flex:1"><div class="exp-title">'+escapeHtml(e.title)+'</div><div style="margin-top:2px"><span class="exp-badge exp-type-'+e.type+'">'+tl[e.type]+'</span><span class="exp-badge exp-status-'+e.status+'">'+sl[e.status]+'</span><span style="font-size:11px;color:var(--muted)">'+e.date+(proj?' · '+escapeHtml(proj.name):'')+'</span></div></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm btn-outline" onclick="cycleExpStatus(\''+e.id+'\')">更新状态</button><button class="btn-ghost" onclick="deleteExperiment(\''+e.id+'\')">删除</button></div></div>'+(e.params?'<div class="exp-detail"><strong>参数：</strong>\n'+escapeHtml(e.params)+'</div>':'')+(e.results?'<div class="exp-detail"><strong>结果：</strong>\n'+escapeHtml(e.results)+'</div>':'')+(e.notes?'<div class="note-box">'+escapeHtml(e.notes)+'</div>':'')+'<button class="btn-ghost" onclick="editExpNotes(\''+e.id+'\')">'+(e.notes?'编辑备注':'添加备注')+'</button></div>';
+  });
+  document.getElementById('view-experiments').innerHTML=h;
+}
+
+// ===== Render: Ideas (Enhanced) =====
+function renderIdeas(){
+  const allTags=[...new Set(state.ideas.flatMap(i=>i.tags))];
+  let filtered=ideaTagFilter?state.ideas.filter(i=>i.tags.includes(ideaTagFilter)):state.ideas;
+  const pl={high:'🔥紧急',medium:'⭐重要',low:'💡普通'};
+  let h='<div class="view-header"><div><div class="view-title">Idea 速记</div><div class="view-subtitle">随手记 · 打标签 · 可转待办/项目</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:200px"><textarea id="ideaContent" placeholder="记录你的想法..." onkeydown="if(event.key===\'Enter\'&&event.metaKey)addIdea()" style="min-height:50px"></textarea></div></div><div class="form-row" style="margin-bottom:0"><div class="form-group" style="flex:1"><input type="text" id="ideaTags" placeholder="标签（逗号分隔）"></div><div class="form-group"><select id="ideaPriority"><option value="low">💡普通</option><option value="medium" selected>⭐重要</option><option value="high">🔥紧急</option></select></div><button class="btn btn-primary" onclick="addIdea()">记录</button></div></div>';
+  if(allTags.length){h+='<div class="tag-filter"><span class="badge '+(!ideaTagFilter?'badge-done':'badge-tag')+'" onclick="ideaTagFilter=null;renderIdeas()">全部</span>';allTags.forEach(t=>{h+='<span class="badge '+(ideaTagFilter===t?'badge-done':'badge-tag')+'" onclick="ideaTagFilter='+(ideaTagFilter===t?'null':"'"+t+"'")+';renderIdeas()">'+t+'</span>'});h+='</div>'}
+  if(filtered.length){
+    filtered.sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).forEach(i=>{
+      h+='<div class="idea-item"><div class="idea-content">'+escapeHtml(i.content)+'</div><div class="idea-meta"><span class="idea-priority '+(i.priority||'low')+'">'+(pl[i.priority||'low'])+'</span>'+i.tags.map(t=>'<span class="badge badge-tag" onclick="ideaTagFilter=\''+t+'\';renderIdeas()">'+t+'</span>').join('')+'<span style="color:var(--muted);font-size:11px;margin-left:auto">'+i.createdAt+'</span><button class="btn btn-sm btn-outline" onclick="ideaToTodo(\''+i.id+'\')">转待办</button><button class="btn btn-sm btn-outline" onclick="ideaToProject(\''+i.id+'\')">转项目</button><button class="btn-ghost" onclick="deleteIdea(\''+i.id+'\')">删除</button></div></div>';
+    });
+  }else{h+='<div class="empty-state"><p>暂无想法</p></div>'}
+  document.getElementById('view-ideas').innerHTML=h;
+}
+
+// ===== Render: Projects (Enhanced) =====
+function renderProjects(){
+  let h='<div class="view-header"><div><div class="view-title">项目跟进</div><div class="view-subtitle">追踪进度 · 关联待办和实验 · 标记卡点</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:150px"><input type="text" id="projName" placeholder="项目名称"></div><div class="form-group" style="flex:1;min-width:150px"><input type="text" id="projCurrent" placeholder="当前进度"></div><div class="form-group" style="flex:1;min-width:150px"><input type="text" id="projNext" placeholder="下一步"></div><div class="form-group" style="flex:1;min-width:150px"><input type="text" id="projBlocker" placeholder="卡点（可选）"></div><button class="btn btn-primary" onclick="addProject()">添加</button></div></div>';
+  if(state.projects.length===0){h+='<div class="empty-state"><p>暂无项目</p></div>'}
+  state.projects.forEach(p=>{
+    const linked=state.todos.filter(t=>t.projectId===p.id);
+    const dc=linked.filter(t=>t.completed).length;
+    const pct=linked.length?Math.round(dc/linked.length*100):0;
+    const le=state.experiments.filter(e=>e.projectId===p.id);
+    h+='<div class="project-item"><div class="project-header"><div><span class="project-name">'+escapeHtml(p.name)+'</span><span class="badge-status '+(p.status==='active'?'badge-active':'badge-paused')+'" style="margin-left:8px">'+(p.status==='active'?'进行中':'暂停')+'</span></div><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="toggleProjectStatus(\''+p.id+'\')">'+(p.status==='active'?'暂停':'激活')+'</button><button class="btn-ghost" onclick="deleteProject(\''+p.id+'\')">删除</button></div></div><div style="font-size:13px;color:var(--muted);margin:4px 0"><strong style="color:var(--text)">当前：</strong>'+escapeHtml(p.currentStep)+'</div><div style="font-size:13px;color:var(--muted)"><strong style="color:var(--text)">下一步：</strong>'+escapeHtml(p.nextStep)+'</div>'+(p.blocker?'<div class="project-blocker"><strong>卡点：</strong>'+escapeHtml(p.blocker)+'</div>':'')+(linked.length>0?'<div class="project-progress-bar"><div class="project-progress-fill" style="width:'+pct+'%"></div></div><div style="font-size:12px;color:var(--muted)">关联待办：'+dc+'/'+linked.length+'（'+pct+'%）</div><div class="project-todos">'+linked.map(t=>'<div class="project-todo-link"><span class="dot" style="background:'+(t.completed?'var(--green)':'var(--amber)')+'"></span>'+escapeHtml(t.title)+' '+(t.completed?'<span style="color:var(--green)">已完成</span>':'<span style="color:var(--amber)">待完成</span>')+'</div>').join('')+'</div>':'<div class="note-box">暂无关联待办</div>')+(le.length>0?'<div style="margin-top:8px;font-size:12px;color:var(--muted)">关联实验：'+le.length+'个 · <button class="btn-ghost" onclick="expFilter.project=\''+p.id+'\';switchView(\'experiments\')">查看</button></div>':'')+'</div>';
+  });
+  document.getElementById('view-projects').innerHTML=h;
+}
+
+// ===== Render: Papers (Enhanced) =====
+function renderPapers(){
+  let h='<div class="view-header"><div><div class="view-title">Paper 进度</div><div class="view-subtitle">9阶段追踪 · 目标期刊 · 合作者 · 进度可视化</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:200px"><input type="text" id="paperTitle" placeholder="论文标题"></div><div class="form-group"><input type="text" id="paperVenue" placeholder="目标期刊/会议" style="width:140px"></div><div class="form-group"><input type="text" id="paperCoAuthors" placeholder="合作者" style="width:120px"></div><div class="form-group"><select id="paperStage">'+PAPER_STAGES.map(s=>'<option value="'+s.key+'">'+s.label+'</option>').join('')+'</select></div><div class="form-group"><input type="number" id="paperProgress" placeholder="%" min="0" max="100" value="0" style="width:70px"></div><div class="form-group"><input type="date" id="paperDeadline" style="width:140px"></div><button class="btn btn-primary" onclick="addPaper()">添加</button></div></div>';
+  if(state.papers.length===0){h+='<div class="empty-state"><p>暂无论文记录</p></div>'}
+  state.papers.forEach(p=>{
+    const si=getStageIndex(p.stage);const si2=getStageInfo(p.stage);
+    const days=p.deadline?daysUntil(p.deadline):null;
+    h+='<div class="paper-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px"><div style="flex:1"><div class="paper-title">'+escapeHtml(p.title)+'</div>'+(p.venue?'<div class="paper-meta-row">目标：'+escapeHtml(p.venue)+'</div>':'')+(p.coAuthors?'<div class="paper-meta-row">合作者：'+escapeHtml(p.coAuthors)+'</div>':'')+(p.doi?'<div class="paper-meta-row">DOI: '+escapeHtml(p.doi)+'</div>':'')+(days!==null?'<div class="paper-meta-row" style="color:'+(days<0?'var(--red)':'var(--muted)')+'">截止 '+p.deadline+(days>=0?'（'+days+'天）':'（已过期）')+'</div>':'')+'</div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-sm btn-outline" onclick="editPaper(\''+p.id+'\')">编辑</button><button class="btn-ghost" onclick="deletePaper(\''+p.id+'\')">删除</button></div></div><div class="paper-stage-track">'+PAPER_STAGES.map((s,i)=>'<div class="paper-stage-dot '+(i===si?'':'')+(i<si?' done':'')+'" style="'+(i===si?'background:'+s.color+';color:#fff;font-weight:700;':'')+(i<si?'background:'+s.color+';':'')+'">'+s.label+'</div>').join('')+'</div><div class="paper-progress-ring">'+progressRing(p.progress,80,8,si2.color)+'<div style="flex:1"><div style="font-size:13px;color:var(--muted);margin-bottom:4px"><strong style="color:var(--text)">当前阶段：</strong>'+si2.label+'</div><input type="range" min="0" max="100" value="'+p.progress+'" oninput="updatePaperProgress(\''+p.id+'\',this.value)" style="width:100%;accent-color:var(--teal)">'+(p.notes?'<div class="note-box">'+escapeHtml(p.notes)+'</div>':'')+'</div></div></div>';
+  });
+  document.getElementById('view-papers').innerHTML=h;
+}
+
+// ===== Render: Meetings (NEW) =====
+function renderMeetings(){
+  const tl={group:'组会',advisor:'导师1v1',collab:'合作会议',seminar:'研讨会',other:'其他'};
+  let filtered=meetingFilter.type?state.meetings.filter(m=>m.type===meetingFilter.type):state.meetings;
+  let h='<div class="view-header"><div><div class="view-title">会议记录</div><div class="view-subtitle">组会/导师会/合作会 · 纪要 · 待办事项</div></div></div>';
+  h+='<div class="card"><div class="form-row"><div class="form-group" style="flex:1;min-width:150px"><input type="text" id="meetingTitle" placeholder="会议主题"></div><div class="form-group"><select id="meetingType">'+Object.entries(tl).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('')+'</select></div><div class="form-group"><input type="date" id="meetingDate" value="'+todayStr()+'" style="width:140px"></div><div class="form-group" style="flex:1"><input type="text" id="meetingAttendees" placeholder="参会人（逗号分隔）"></div><button class="btn btn-primary" onclick="addMeeting()">添加</button></div><div class="form-row" style="margin-bottom:0"><div class="form-group" style="flex:1"><textarea id="meetingNotes" placeholder="会议纪要..." style="min-height:50px"></textarea></div></div><div class="form-row" style="margin-bottom:0"><div class="form-group" style="flex:1"><textarea id="meetingActions" placeholder="待办事项（每行一个）" style="min-height:40px"></textarea></div></div></div>';
+  h+='<div class="lit-filter-bar"><span class="badge '+(meetingFilter.type===null?'badge-done':'badge-tag')+'" onclick="meetingFilter.type=null;renderMeetings()">全部</span>';
+  Object.entries(tl).forEach(([k,v])=>{h+='<span class="badge '+(meetingFilter.type===k?'badge-done':'badge-tag')+'" onclick="meetingFilter.type=\''+k+'\';renderMeetings()">'+v+'</span>'});
+  h+='</div>';
+  if(filtered.length===0){h+='<div class="empty-state"><p>暂无会议记录</p></div>'}
+  filtered.sort((a,b)=>b.date.localeCompare(a.date)).forEach(m=>{
+    const ah=(m.actions||[]).map(a=>'<div class="meeting-action"><div class="todo-checkbox '+(a.done?'checked':'')+'" onclick="toggleMeetingAction(\''+m.id+'\',\''+a.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><span class="'+(a.done?'done-text':'')+'">'+escapeHtml(a.text)+'</span></div>').join('');
+    h+='<div class="meeting-item"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div style="flex:1"><div style="font-weight:700;font-size:14px">'+escapeHtml(m.title)+'</div><div style="margin-top:2px"><span class="meeting-type-badge mt-'+m.type+'">'+tl[m.type]+'</span><span style="font-size:11px;color:var(--muted)">'+m.date+(m.attendees?' · '+escapeHtml(m.attendees):'')+'</span></div></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn-ghost" onclick="deleteMeeting(\''+m.id+'\')">删除</button></div></div>'+(m.notes?'<div class="meeting-notes">'+escapeHtml(m.notes)+'</div>':'')+(ah?'<div style="margin-top:6px"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">待办事项</div>'+ah+'</div>':'')+'</div>';
+  });
+  document.getElementById('view-meetings').innerHTML=h;
+}
+
+// ===== Render: Weekly (Enhanced) =====
+function renderWeekly(){
+  const ws=fmtDate(getWeekStart()),we=fmtDate(getWeekEnd());
+  const cw=state.todos.filter(t=>t.completed&&t.completedDate&&isThisWeek(t.completedDate));
+  const pd=[
+    {label:'P0',value:cw.filter(t=>t.priority==='P0').length,color:'#ef4444'},
+    {label:'P1',value:cw.filter(t=>t.priority==='P1').length,color:'#f59e0b'},
+    {label:'P2',value:cw.filter(t=>t.priority==='P2').length,color:'#3b82f6'}
+  ];
+  const weekLogs=state.timeLogs.filter(l=>isThisWeek(l.date));
+  const projData=state.projects.map(p=>{
+    const c=weekLogs.filter(l=>l.projectId===p.id).reduce((s,l)=>s+l.duration,0);
+    return{label:p.name.length>6?p.name.slice(0,6)+'…':p.name,value:c,color:'#0d9488'};
+  }).filter(d=>d.value>0);
+  const actData=ACTIVITY_TYPES.map(a=>{
+    const c=weekLogs.filter(l=>l.activityType===a.value).reduce((s,l)=>s+l.duration,0);
+    return{label:a.label,value:c};
+  }).filter(d=>d.value>0);
+  const blockers=state.projects.filter(p=>p.blocker&&p.status==='active');
+  const note=state.weeklyNotes.find(n=>n.weekStart===ws);
+  const totalFocus=weekLogs.reduce((s,l)=>s+l.duration,0);
+  const expCount=state.experiments.filter(e=>isThisWeek(e.date)).length;
+  const readCount=state.literature.filter(l=>l.status==='read'&&isThisWeek(l.addedAt)).length;
+  let h='<div class="view-header"><div><div class="view-title">每周复盘</div><div class="view-subtitle">'+ws+' ~ '+we+' · 自动统计</div></div></div>';
+  h+='<div class="stats-grid"><div class="stat-card success"><div class="stat-value">'+cw.length+'</div><div class="stat-label">本周完成</div></div><div class="stat-card blue"><div class="stat-value">'+totalFocus+'</div><div class="stat-label">专注(分钟)</div></div><div class="stat-card"><div class="stat-value">'+expCount+'</div><div class="stat-label">实验次数</div></div><div class="stat-card"><div class="stat-value">'+readCount+'</div><div class="stat-label">读完文献</div></div></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  h+='<div class="chart-container"><div class="chart-title">按优先级分布</div>'+pieChart(pd,['#ef4444','#f59e0b','#3b82f6'])+'</div>';
+  h+='<div class="chart-container"><div class="chart-title">时间分布（按项目·分钟）</div>'+(projData.length?barChart(projData):'<div style="text-align:center;color:var(--muted);padding:20px">暂无数据</div>')+'</div>';
+  h+='</div>';
+  if(actData.length){
+    h+='<div class="chart-container"><div class="chart-title">时间分布（按活动类型·分钟）</div>'+pieChart(actData,ACTIVITY_TYPES.map(a=>a.color))+'</div>';
+  }
+  h+='<div class="chart-container"><div class="chart-title">卡点汇总</div>'+(blockers.length?blockers.map(p=>'<div class="blocker-list-item"><span style="color:var(--red);font-weight:700">●</span><div><strong>'+escapeHtml(p.name)+'</strong>：'+escapeHtml(p.blocker)+'</div></div>').join(''):'<div style="color:var(--muted);padding:8px">本周无卡点</div>')+'</div>';
+  h+='<div class="card"><div class="section-label">本周反思</div>';
+  const fields=[{k:'wentWell',l:'做得好的'},{k:'didntGoWell',l:'做得不好的'},{k:'lessons',l:'经验教训'},{k:'nextWeek',l:'下周计划'}];
+  fields.forEach(f=>{
+    h+='<div class="form-group" style="margin-top:8px"><label>'+f.l+'</label><textarea id="wn_'+f.k+'" placeholder="'+f.l+'..." style="min-height:50px">'+(note&&note[f.k]?escapeHtml(note[f.k]):'')+'</textarea></div>';
+  });
+  h+='<button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="saveWeeklyNote(\''+ws+'\')">保存反思</button></div>';
+  document.getElementById('view-weekly').innerHTML=h;
+}
+
+// ===== Render: Timer (NEW) =====
+function renderTimer(){
+  const todayLogs=state.timeLogs.filter(l=>l.date===todayStr());
+  const tf=todayLogs.reduce((s,l)=>s+l.duration,0);
+  const weekLogs=state.timeLogs.filter(l=>isThisWeek(l.date));
+  const wf=weekLogs.reduce((s,l)=>s+l.duration,0);
+  const total=timer.mode==='work'?timer.workDuration:timer.breakDuration;
+  let h='<div class="view-header"><div><div class="view-title">时间追踪</div><div class="view-subtitle">番茄钟专注 · 按项目/活动统计</div></div></div>';
+  h+='<div class="card timer-container"><div id="timerCircleWrap">'+timerCircle(timer.remaining,total,timer.mode)+'</div>';
+  h+='<div class="timer-controls"><button class="btn btn-primary" onclick="startTimer()" '+(timer.running?'disabled':'')+'>'+(timer.running?'运行中':'开始专注')+'</button><button class="btn btn-outline" onclick="pauseTimer()" '+(!timer.running?'disabled':'')+'>暂停</button><button class="btn btn-outline" onclick="resetTimer()">重置</button></div>';
+  h+='<div class="timer-config"><div class="form-group"><label>专注时长（分钟）</label><select id="timerWorkDur" onchange="changeWorkDur(this.value)"><option value="15" '+(timer.workDuration===15?'selected':'')+'>15</option><option value="25" '+(timer.workDuration===25?'selected':'')+'>25</option><option value="45" '+(timer.workDuration===45?'selected':'')+'>45</option><option value="60" '+(timer.workDuration===60?'selected':'')+'>60</option></select></div><div class="form-group"><label>休息时长（分钟）</label><select id="timerBreakDur" onchange="changeBreakDur(this.value)"><option value="5" '+(timer.breakDuration===5?'selected':'')+'>5</option><option value="10" '+(timer.breakDuration===10?'selected':'')+'>10</option><option value="15" '+(timer.breakDuration===15?'selected':'')+'>15</option></select></div><div class="form-group"><label>关联项目</label><select id="timerProject"><option value="">不关联</option>'+state.projects.map(p=>'<option value="'+p.id+'" '+(timer.projectId===p.id?'selected':'')+'>'+escapeHtml(p.name)+'</option>').join('')+'</select></div><div class="form-group"><label>活动类型</label><select id="timerActivity" onchange="timer.activityType=this.value">'+ACTIVITY_TYPES.map(a=>'<option value="'+a.value+'" '+(timer.activityType===a.value?'selected':'')+'>'+a.label+'</option>').join('')+'</select></div></div></div>';
+  h+='<div class="stats-grid"><div class="stat-card blue"><div class="stat-value">'+tf+'</div><div class="stat-label">今日专注(分)</div></div><div class="stat-card success"><div class="stat-value">'+todayLogs.length+'</div><div class="stat-label">今日番茄</div></div><div class="stat-card"><div class="stat-value">'+wf+'</div><div class="stat-label">本周专注(分)</div></div><div class="stat-card"><div class="stat-value">'+timer.completedSessions+'</div><div class="stat-label">本轮完成</div></div></div>';
+  if(weekLogs.length){
+    const projData=state.projects.map(p=>{const c=weekLogs.filter(l=>l.projectId===p.id).reduce((s,l)=>s+l.duration,0);return{label:p.name.length>6?p.name.slice(0,6)+'…':p.name,value:c,color:'#0d9488'}}).filter(d=>d.value>0);
+    const actData=ACTIVITY_TYPES.map(a=>{const c=weekLogs.filter(l=>l.activityType===a.value).reduce((s,l)=>s+l.duration,0);return{label:a.label,value:c}}).filter(d=>d.value>0);
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    if(projData.length)h+='<div class="chart-container"><div class="chart-title">本周时间（按项目·分钟）</div>'+barChart(projData)+'</div>';
+    if(actData.length)h+='<div class="chart-container"><div class="chart-title">本周时间（按活动·分钟）</div>'+pieChart(actData,ACTIVITY_TYPES.map(a=>a.color))+'</div>';
+    h+='</div>';
+  }
+  if(todayLogs.length){
+    h+='<div class="card"><div class="section-label">今日专注记录</div>';
+    todayLogs.sort((a,b)=>a.startTime.localeCompare(b.startTime)).forEach(l=>{
+      const proj=l.projectId?state.projects.find(p=>p.id===l.projectId):null;
+      h+='<div class="timer-session-item"><span style="color:var(--teal-d);font-weight:600">'+l.startTime+'</span><span style="flex:1">'+l.duration+'分钟 · '+actLabel(l.activityType)+(proj?' · '+escapeHtml(proj.name):'')+'</span></div>';
+    });
+    h+='</div>';
+  }
+  document.getElementById('view-timer').innerHTML=h;
+  // Bind project selector
+  const tp=document.getElementById('timerProject');
+  if(tp)tp.onchange=function(){timer.projectId=this.value};
+}
+
+// ===== Render: Fitness =====
+function renderFitness(){
+  const plan=FITNESS_PLAN[new Date().getDay()];
+  const todayLog=state.fitness.find(f=>f.date===todayStr());
+  const weekStats=state.fitness.filter(f=>isThisWeek(f.date));
+  const totalMin=weekStats.reduce((s,f)=>s+f.duration,0);
+  const activeDays=getActiveDays();
+  let h='<div class="view-header"><div><div class="view-title">健身打卡</div><div class="view-subtitle">每周训练计划 · 打卡记录 · 热力图</div></div></div>';
+  // Today's plan card
+  h+='<div class="fitness-today"><div class="fitness-plan-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5l11 11M2 9v6M5 5v14M19 5v14M22 9v6"/></svg>今日计划：'+plan.title+'</div>';
+  if(plan.rest){
+    h+='<div style="font-size:13px;color:var(--muted);margin-bottom:8px">今天是休息日，让身体恢复一下。'+(plan.items.length>0?'<br>如果想活动一下也可以打卡：':'')+'</div>';
+    plan.items.forEach(i=>{h+='<div style="font-size:12px;color:var(--muted);padding:1px 0">• '+i+'</div>'});
+  } else {
+    h+='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">建议时长 '+plan.duration+'分钟 · '+fitTypeLabel(plan.type)+'</div>';
+    plan.items.forEach(i=>{h+='<div class="fitness-exercise"><div class="fitness-check '+(todayLog?'done':'')+'"></div>'+i+'</div>'});
+  }
+  if(todayLog){
+    h+='<div class="note-box" style="margin-top:8px">今日已打卡 · '+fitTypeLabel(todayLog.type)+' · '+todayLog.duration+'分钟'+(todayLog.notes?' · '+escapeHtml(todayLog.notes):'')+'</div>';
+  } else {
+    // Check-in form with type selector
+    h+='<div class="form-row" style="margin-top:12px;margin-bottom:0"><div class="form-group"><select id="fitType" onchange="updateFitItems()">'+FITNESS_TYPES.map(t=>'<option value="'+t.value+'" '+(t.value===plan.type?'selected':'')+'>'+t.label+'</option>').join('')+'</select></div><div class="form-group"><input type="number" id="fitDuration" placeholder="时长(分钟)" value="'+plan.duration+'" style="width:120px"></div><div class="form-group" style="flex:1"><input type="text" id="fitNotes" placeholder="备注（可选）"></div><button class="btn btn-primary" onclick="addFitness()">打卡</button></div>';
+    h+='<input type="hidden" id="fitItems" value="'+plan.items.join('|')+'">';
+  }
+  h+='</div>';
+  // Weekly schedule overview
+  h+='<div class="card"><div class="section-label">本周训练计划</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
+  const dayNames=['日','一','二','三','四','五','六'];
+  FITNESS_PLAN.forEach(d=>{
+    const log=state.fitness.find(f=>f.date===todayStr()&&false); // not needed here
+    const hasLog=weekStats.some(w=>{const wd=parseDate(w.date);return wd&&wd.getDay()===d.day});
+    h+='<div style="flex:1;min-width:80px;text-align:center;padding:8px 4px;border-radius:8px;background:'+(d.rest?'var(--bg)':'#f0fdfa')+';border:1px solid '+(d.rest?'var(--border)':'#ccfbf1')+'"><div style="font-size:11px;color:var(--muted)">周'+dayNames[d.day]+'</div><div style="font-size:12px;font-weight:600;margin:2px 0;color:'+(d.rest?'var(--muted)':'var(--teal-d)')+'">'+(d.rest?'休息':fitTypeLabel(d.type))+'</div>'+(d.rest?'<div style="font-size:10px;color:var(--muted)">恢复</div>':'<div style="font-size:10px;color:var(--muted)">'+d.duration+'min</div>')+'<div style="margin-top:4px">'+(hasLog?'<span style="color:var(--green);font-size:14px">✓</span>':d.rest?'<span style="color:var(--border);font-size:14px">○</span>':'<span style="color:var(--border);font-size:14px">○</span>')+'</div></div>';
+  });
+  h+='</div><div style="font-size:12px;color:var(--muted);margin-top:8px">本周推荐 '+activeDays+' 个训练日，已打卡 '+weekStats.length+' 天。休息日不用打卡，让身体充分恢复。</div></div>';
+  // Stats
+  h+='<div class="stats-grid"><div class="stat-card success"><div class="stat-value">'+weekStats.length+'/'+activeDays+'</div><div class="stat-label">本周训练日</div></div><div class="stat-card"><div class="stat-value">'+totalMin+'</div><div class="stat-label">本周时长(分)</div></div><div class="stat-card"><div class="stat-value">'+state.fitness.length+'</div><div class="stat-label">累计打卡</div></div></div>';
+  h+='<div class="chart-container"><div class="chart-title">近8周活动热力图</div>'+heatmap(state.fitness)+'</div>';
+  // Records
+  h+='<div class="card"><div class="section-label">打卡记录</div>'+(state.fitness.length===0?'<div style="color:var(--muted);padding:8px">暂无打卡记录</div>':state.fitness.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15).map(f=>'<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--muted);min-width:80px">'+f.date+'</span><span class="badge '+fitTypeBadge(f.type)+'">'+fitTypeLabel(f.type)+'</span><span style="font-size:13px;flex:1">'+f.duration+'分钟</span>'+(f.notes?'<span style="font-size:12px;color:var(--muted)">'+escapeHtml(f.notes)+'</span>':'')+'<button class="btn-ghost" onclick="deleteFitness(\''+f.id+'\')">删除</button></div>').join(''))+'</div>';
+  document.getElementById('view-fitness').innerHTML=h;
+}
+function updateFitItems(){
+  const t=document.getElementById('fitType').value;
+  const p=FITNESS_PLAN.find(d=>d.type===t);
+  if(p){document.getElementById('fitItems').value=p.items.join('|');document.getElementById('fitDuration').value=p.duration}
+  else if(t==='football'){document.getElementById('fitItems').value='足球比赛或训练 60分钟|赛前热身 10分钟|赛后拉伸 10分钟';document.getElementById('fitDuration').value=60}
+}
+
+// ===== Render: English (Enhanced) =====
+let englishCatFilter=null;
+function getEnglishTypeLabel(type){
+  const m={vocabulary:'词汇学习',phrases:'常用句式',tip:'写作技巧',news:'新闻阅读',listening:'听力训练',speaking:'口语练习',reading:'阅读理解',writing:'写作练习'};
+  return m[type]||type;
+}
+function setEnglishCat(cat){englishCatFilter=cat;renderEnglish();}
+function renderEnglishLessonCard(lesson,idx,isToday){
+  var cat=ENGLISH_CATS.find(function(c){return c.id===lesson.cat});
+  var studied=state.englishLog.includes(String(idx));
+  var typeLabel=getEnglishTypeLabel(lesson.type);
+  var h='<div class="english-card'+(isToday?' english-today':'')+'">';
+  if(isToday)h+='<div class="english-today-badge">今日推荐</div>';
+  h+='<div class="english-card-header"><div>';
+  if(cat)h+='<span class="eng-cat-badge eng-cat-'+cat.id+'">'+cat.label+'</span> ';
+  h+='<span style="font-size:11px;color:var(--muted)">'+typeLabel+'</span></div>';
+  if(studied)h+='<span class="badge badge-done">已学</span>';
+  h+='</div>';
+  h+='<div class="english-lesson-title">'+escapeHtml(lesson.title)+'</div>';
+  h+=lesson.items.map(function(item){
+    return '<div class="english-item">'+
+      '<div class="english-term">'+escapeHtml(item.term)+(item.phonetic?'<span class="english-phonetic">/'+escapeHtml(item.phonetic)+'/</span>':'')+'</div>'+
+      '<div class="english-def">'+escapeHtml(item.def)+'</div>'+
+      (item.example?'<div class="english-example">'+escapeHtml(item.example)+'</div>':'')+
+      '</div>';
+  }).join('');
+  h+='<div style="margin-top:12px"><button class="english-studied" onclick="markEnglishStudied('+idx+')" '+(studied?'disabled':'')+'><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>'+(studied?'已学习':'标记为已学')+'</button></div>';
+  h+='</div>';
+  return h;
+}
+function renderEnglish(){
+  var doy=getDayOfYear();
+  var todayIdx=doy%ENGLISH_LESSONS.length;
+  var total=ENGLISH_LESSONS.length;
+  var ts=state.englishLog.length;
+  var byCat={};
+  ENGLISH_LESSONS.forEach(function(l){byCat[l.cat]=(byCat[l.cat]||0)+1});
+  var h='<div class="view-header"><div><div class="view-title">英语学习</div><div class="view-subtitle">听说读写全面提高 · 物理海洋学 · 学术英语 · 前沿资讯 · 共'+total+'课</div></div></div>';
+  h+='<div class="card" style="text-align:center"><div style="font-size:24px;font-weight:800;color:var(--teal)">'+ts+'/'+total+'</div><div style="font-size:12px;color:var(--muted)">已学课程数</div><div class="project-progress-bar" style="margin-top:8px"><div class="project-progress-fill" style="width:'+Math.round(ts/total*100)+'%"></div></div><div style="font-size:11px;color:var(--muted);margin-top:6px">'+Math.round(ts/total*100)+'% 完成</div></div>';
+  h+='<div class="eng-cat-tabs"><button class="eng-cat-tab '+(englishCatFilter===null?'active':'')+'" onclick="setEnglishCat(null)">全部 ('+total+')</button>';
+  ENGLISH_CATS.forEach(function(c){
+    h+='<button class="eng-cat-tab '+(englishCatFilter===c.id?'active':'')+'" onclick="setEnglishCat(\''+c.id+'\')">'+c.label+' ('+(byCat[c.id]||0)+')</button>';
+  });
+  h+='</div>';
+  if(englishCatFilter===null){
+    h+=renderEnglishLessonCard(ENGLISH_LESSONS[todayIdx],todayIdx,true);
+  }
+  var filtered=ENGLISH_LESSONS;
+  if(englishCatFilter)filtered=filtered.filter(function(l){return l.cat===englishCatFilter});
+  filtered.forEach(function(lesson,i){
+    var realIdx=ENGLISH_LESSONS.indexOf(lesson);
+    if(realIdx===todayIdx&&englishCatFilter===null)return;
+    h+=renderEnglishLessonCard(lesson,realIdx,false);
+  });
+  document.getElementById('view-english').innerHTML=h;
+}
+
+// ===== Render Dispatcher =====
+function renderView(id){
+  switch(id){
+    case'today':renderToday();break;
+    case'todos':renderTodos();break;
+    case'literature':renderLiterature();break;
+    case'experiments':renderExperiments();break;
+    case'ideas':renderIdeas();break;
+    case'projects':renderProjects();break;
+    case'papers':renderPapers();break;
+    case'meetings':renderMeetings();break;
+    case'weekly':renderWeekly();break;
+    case'timer':renderTimer();break;
+    case'fitness':renderFitness();break;
+    case'english':renderEnglish();break;
+  }
+}
+function render(){renderNav();renderUrgent();renderView(currentView);checkReminder();}
+
+// ===== Todo CRUD =====
+function addTodo(){
+  const title=document.getElementById('todoTitle').value.trim();
+  if(!title){showToast('请输入任务标题','error');return}
+  const priority=document.getElementById('todoPriority').value;
+  const deadline=document.getElementById('todoDeadline').value;
+  const projectId=document.getElementById('todoProject').value||null;
+  const estimatedTime=parseInt(document.getElementById('todoEstTime').value)||0;
+  const subStr=document.getElementById('todoSubtasks').value.trim();
+  const subtasks=subStr?subStr.split(/[,，]/).map(s=>s.trim()).filter(Boolean).map(s=>({id:uid(),text:s,done:false})):[];
+  state.todos.push({id:uid(),title,priority,deadline,completed:false,projectId,createdAt:todayStr(),deferCount:0,originalDeadline:deadline,completedDate:null,estimatedTime,subtasks});
+  saveState();render();document.getElementById('todoTitle').value='';document.getElementById('todoEstTime').value='';document.getElementById('todoSubtasks').value='';
+}
+function toggleTodo(id){const t=state.todos.find(t=>t.id===id);if(!t)return;t.completed=!t.completed;t.completedDate=t.completed?todayStr():null;saveState();render();}
+function toggleSubtask(tid,sid){const t=state.todos.find(t=>t.id===tid);if(!t||!t.subtasks)return;const s=t.subtasks.find(s=>s.id===sid);if(s)s.done=!s.done;saveState();render();}
+function deferTodo(id){const t=state.todos.find(t=>t.id===id);if(!t)return;t.deadline=tomorrowStr();t.deferCount=(t.deferCount||0)+1;saveState();render();showToast('已顺延到明天');}
+function deleteTodo(id){showModal('删除任务','确定删除这条待办吗？',()=>{state.todos=state.todos.filter(t=>t.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== Literature CRUD =====
+function addLiterature(){
+  const title=document.getElementById('litTitle').value.trim();
+  if(!title){showToast('请输入标题','error');return}
+  const tags=document.getElementById('litTags').value.split(/[,，]/).map(t=>t.trim()).filter(Boolean);
+  state.literature.push({id:uid(),title,authors:document.getElementById('litAuthors').value.trim(),year:parseInt(document.getElementById('litYear').value)||null,venue:document.getElementById('litVenue').value.trim(),doi:document.getElementById('litDoi').value.trim(),status:document.getElementById('litStatus').value,rating:0,tags,notes:'',addedAt:todayStr()});
+  saveState();render();['litTitle','litAuthors','litYear','litVenue','litTags','litDoi'].forEach(f=>document.getElementById(f).value='');
+}
+function setRating(id,r){const l=state.literature.find(l=>l.id===id);if(!l)return;l.rating=r;saveState();renderLiterature();}
+function cycleLitStatus(id){const l=state.literature.find(l=>l.id===id);if(!l)return;const order=['unread','reading','read'];l.status=order[(order.indexOf(l.status)+1)%3];saveState();renderLiterature();}
+function editLitNotes(id){const l=state.literature.find(l=>l.id===id);if(!l)return;const n=prompt('编辑笔记：',l.notes||'');if(n!==null){l.notes=n;saveState();renderLiterature();}}
+function deleteLiterature(id){showModal('删除文献','确定删除这条文献记录吗？',()=>{state.literature=state.literature.filter(l=>l.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== Experiment CRUD =====
+function addExperiment(){
+  const title=document.getElementById('expTitle').value.trim();
+  if(!title){showToast('请输入实验名称','error');return}
+  state.experiments.push({id:uid(),title,date:document.getElementById('expDate').value,projectId:document.getElementById('expProject').value||null,type:document.getElementById('expType').value,params:document.getElementById('expParams').value.trim(),results:document.getElementById('expResults').value.trim(),status:document.getElementById('expStatus').value,notes:'',createdAt:todayStr()});
+  saveState();render();['expTitle','expParams','expResults'].forEach(f=>document.getElementById(f).value='');
+}
+function cycleExpStatus(id){const e=state.experiments.find(e=>e.id===id);if(!e)return;const order=['planned','running','completed','failed'];e.status=order[(order.indexOf(e.status)+1)%4];saveState();renderExperiments();}
+function editExpNotes(id){const e=state.experiments.find(e=>e.id===id);if(!e)return;const n=prompt('编辑备注：',e.notes||'');if(n!==null){e.notes=n;saveState();renderExperiments();}}
+function deleteExperiment(id){showModal('删除实验','确定删除这条实验记录吗？',()=>{state.experiments=state.experiments.filter(e=>e.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== Idea CRUD (Enhanced) =====
+function addIdea(){
+  const content=document.getElementById('ideaContent').value.trim();
+  if(!content){showToast('请输入内容','error');return}
+  const tags=document.getElementById('ideaTags').value.split(/[,，]/).map(t=>t.trim()).filter(Boolean);
+  const priority=document.getElementById('ideaPriority').value;
+  state.ideas.push({id:uid(),content,tags,priority,createdAt:todayStr()});
+  saveState();render();document.getElementById('ideaContent').value='';document.getElementById('ideaTags').value='';
+}
+function ideaToTodo(id){
+  const idea=state.ideas.find(i=>i.id===id);if(!idea)return;
+  state.todos.push({id:uid(),title:idea.content.slice(0,50),priority:idea.priority==='high'?'P0':idea.priority==='medium'?'P1':'P2',deadline:todayStr(),completed:false,projectId:null,createdAt:todayStr(),deferCount:0,originalDeadline:todayStr(),completedDate:null,estimatedTime:0,subtasks:[]});
+  saveState();render();showToast('已转为待办');
+}
+function ideaToProject(id){
+  const idea=state.ideas.find(i=>i.id===id);if(!idea)return;
+  state.projects.push({id:uid(),name:idea.content.slice(0,20),currentStep:'待规划',nextStep:'待规划',blocker:'',status:'active',createdAt:todayStr()});
+  saveState();render();showToast('已转为项目');
+}
+function deleteIdea(id){showModal('删除想法','确定删除这条想法吗？',()=>{state.ideas=state.ideas.filter(i=>i.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== Project CRUD =====
+function addProject(){
+  const name=document.getElementById('projName').value.trim();
+  if(!name){showToast('请输入项目名称','error');return}
+  state.projects.push({id:uid(),name,currentStep:document.getElementById('projCurrent').value.trim()||'未设置',nextStep:document.getElementById('projNext').value.trim()||'未设置',blocker:document.getElementById('projBlocker').value.trim(),status:'active',createdAt:todayStr()});
+  saveState();render();['projName','projCurrent','projNext','projBlocker'].forEach(f=>document.getElementById(f).value='');
+}
+function toggleProjectStatus(id){const p=state.projects.find(p=>p.id===id);if(!p)return;p.status=p.status==='active'?'paused':'active';saveState();render();}
+function deleteProject(id){showModal('删除项目','删除项目后，关联的待办将解除关联。确定删除吗？',()=>{state.projects=state.projects.filter(p=>p.id!==id);state.todos.forEach(t=>{if(t.projectId===id)t.projectId=null});saveState();render();showToast('已删除');});}
+
+// ===== Paper CRUD (Enhanced) =====
+function addPaper(){
+  const title=document.getElementById('paperTitle').value.trim();
+  if(!title){showToast('请输入论文标题','error');return}
+  state.papers.push({id:uid(),title,stage:document.getElementById('paperStage').value,progress:parseInt(document.getElementById('paperProgress').value)||0,deadline:document.getElementById('paperDeadline').value||null,venue:document.getElementById('paperVenue').value.trim(),coAuthors:document.getElementById('paperCoAuthors').value.trim(),doi:'',notes:'',createdAt:todayStr()});
+  saveState();render();['paperTitle','paperVenue','paperCoAuthors','paperProgress','paperDeadline'].forEach(f=>document.getElementById(f).value='');
+}
+function updatePaperProgress(id,val){const p=state.papers.find(p=>p.id===id);if(!p)return;p.progress=parseInt(val);if(p.progress===100&&p.stage!=='published'&&p.stage!=='accepted')p.stage='accepted';saveState();renderPapers();}
+function editPaper(id){
+  const p=state.papers.find(p=>p.id===id);if(!p)return;
+  const notes=prompt('编辑备注（留空保持不变）：',p.notes||'');
+  if(notes!==null){p.notes=notes;saveState();renderPapers();}
+  const doi=prompt('DOI（留空保持不变）：',p.doi||'');
+  if(doi!==null){p.doi=doi;saveState();renderPapers();}
+}
+function deletePaper(id){showModal('删除论文','确定删除这篇论文记录吗？',()=>{state.papers=state.papers.filter(p=>p.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== Meeting CRUD =====
+function addMeeting(){
+  const title=document.getElementById('meetingTitle').value.trim();
+  if(!title){showToast('请输入会议主题','error');return}
+  const actionsStr=document.getElementById('meetingActions').value.trim();
+  const actions=actionsStr?actionsStr.split('\n').filter(Boolean).map(t=>({id:uid(),text:t.trim(),done:false})):[];
+  state.meetings.push({id:uid(),title,type:document.getElementById('meetingType').value,date:document.getElementById('meetingDate').value,attendees:document.getElementById('meetingAttendees').value.trim(),notes:document.getElementById('meetingNotes').value.trim(),actions,createdAt:todayStr()});
+  saveState();render();['meetingTitle','meetingAttendees','meetingNotes','meetingActions'].forEach(f=>document.getElementById(f).value='');
+}
+function toggleMeetingAction(mid,aid){
+  const m=state.meetings.find(m=>m.id===mid);if(!m||!m.actions)return;
+  const a=m.actions.find(a=>a.id===aid);if(a)a.done=!a.done;saveState();renderMeetings();
+}
+function deleteMeeting(id){showModal('删除会议','确定删除这条会议记录吗？',()=>{state.meetings=state.meetings.filter(m=>m.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== Fitness CRUD =====
+function addFitness(){
+  const type=document.getElementById('fitType')?document.getElementById('fitType').value:'strength';
+  const duration=parseInt(document.getElementById('fitDuration').value)||30;
+  const notes=document.getElementById('fitNotes').value.trim();
+  const itemsStr=document.getElementById('fitItems')?document.getElementById('fitItems').value:'';
+  const items=itemsStr?itemsStr.split('|'):[fitTypeLabel(type)];
+  state.fitness.push({id:uid(),date:todayStr(),type,items,duration,notes});
+  saveState();render();showToast('打卡成功');
+}
+function deleteFitness(id){showModal('删除打卡','确定删除这条打卡记录吗？',()=>{state.fitness=state.fitness.filter(f=>f.id!==id);saveState();render();showToast('已删除');});}
+
+// ===== English =====
+function markEnglishStudied(idx){const k=String(idx);if(!state.englishLog.includes(k))state.englishLog.push(k);saveState();renderEnglish();showToast('已标记为已学');}
+
+// ===== Weekly Notes =====
+function saveWeeklyNote(ws){
+  const existing=state.weeklyNotes.find(n=>n.weekStart===ws);
+  const data={wentWell:document.getElementById('wn_wentWell').value.trim(),didntGoWell:document.getElementById('wn_didntGoWell').value.trim(),lessons:document.getElementById('wn_lessons').value.trim(),nextWeek:document.getElementById('wn_nextWeek').value.trim()};
+  if(existing)Object.assign(existing,data);else state.weeklyNotes.push({weekStart:ws,...data});
+  saveState();showToast('反思已保存');
+}
+
+// ===== Timer =====
+function tickTimer(){
+  timer.remaining--;
+  if(timer.remaining<=0){
+    if(timer.mode==='work'){
+      state.timeLogs.push({id:uid(),date:todayStr(),startTime:fmtTime(new Date()),duration:timer.workDuration,projectId:timer.projectId||null,activityType:timer.activityType});
+      saveState();timer.completedSessions++;
+      showToast('专注完成！休息一下','success');
+      timer.mode='break';timer.remaining=timer.breakDuration*60;
+    }else{
+      showToast('休息结束，继续专注！','success');
+      timer.mode='work';timer.remaining=timer.workDuration*60;
+    }
+    renderNav();
+  }
+  const w=document.getElementById('timerCircleWrap');
+  if(w){const total=timer.mode==='work'?timer.workDuration:timer.breakDuration;w.innerHTML=timerCircle(timer.remaining,total,timer.mode)}
+}
+function startTimer(){
+  if(timer.running)return;
+  const tp=document.getElementById('timerProject');
+  if(tp)timer.projectId=tp.value;
+  const ta=document.getElementById('timerActivity');
+  if(ta)timer.activityType=ta.value;
+  timer.running=true;
+  timer.intervalId=setInterval(tickTimer,1000);
+  renderTimer();renderNav();
+}
+function pauseTimer(){timer.running=false;clearInterval(timer.intervalId);timer.intervalId=null;renderTimer();renderNav();}
+function resetTimer(){timer.running=false;clearInterval(timer.intervalId);timer.intervalId=null;timer.mode='work';timer.remaining=timer.workDuration*60;renderTimer();renderNav();}
+function changeWorkDur(v){timer.workDuration=parseInt(v);if(!timer.running&&timer.mode==='work')timer.remaining=timer.workDuration*60;renderTimer();}
+function changeBreakDur(v){timer.breakDuration=parseInt(v);if(!timer.running&&timer.mode==='break')timer.remaining=timer.breakDuration*60;renderTimer();}
+
+// ===== Clear/Init =====
+function clearAllData(){
+  showModal('清空所有数据','⚠️ 此操作将删除所有数据且不可恢复！建议先导出备份。确定继续吗？',()=>{
+    state={todos:[],ideas:[],projects:[],papers:[],fitness:[],englishLog:[],weeklyNotes:[],literature:[],experiments:[],meetings:[],timeLogs:[],settings:{lastExportReminder:''}};
+    saveState();render();showToast('已清空所有数据');
+  });
+}
+function finishInit(){
+  ['todos','ideas','projects','papers','fitness','englishLog','weeklyNotes','literature','experiments','meetings','timeLogs'].forEach(k=>{if(!state[k])state[k]=[]});
+  if(!state.settings)state.settings={lastExportReminder:''};
+  state.papers.forEach(p=>{if(!PAPER_STAGES.find(s=>s.key===p.stage))p.stage='concept';if(p.venue===undefined)p.venue='';if(p.coAuthors===undefined)p.coAuthors='';if(p.doi===undefined)p.doi='';});
+  state.todos.forEach(t=>{if(!t.subtasks)t.subtasks=[];if(t.estimatedTime===undefined)t.estimatedTime=0;});
+  state.ideas.forEach(i=>{if(!i.priority)i.priority='low';});
+  timer.remaining=timer.workDuration*60;
+  // Request persistent storage if available
+  if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(()=>{})}
+  saveState(); // sync loaded data to both backends
+  updateSyncBadge();
+  render();
+}
+function init(){
+  // Load newest state across localStorage + IndexedDB
+  loadBestState().then(({best,src})=>{
+    if(best){
+      state=best;
+      storageType=src;storageOK=true;
+    }else{
+      state=generateSampleData();
+    }
+    saveState(); // dual-write loaded/new data to both backends
+    finishInit();
+  });
+}
+// 跨天自动刷新：标签页常开时，零点后自动切到新日期（避免误记到昨天）
+(function(){
+  let lastDay=todayStr();
+  setInterval(function(){
+    const d=todayStr();
+    if(d!==lastDay){
+      lastDay=d;
+      const ae=document.activeElement;
+      const editing=ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.tagName==='SELECT');
+      if(!editing){render();showToast('已进入新的一天 '+d)}
+    }
+  },30000);
+})();
+init();
+
+</script>
+<script>
+/* =========================================================================
+ * 云同步模块（多平台数据共享）——基于 JSONBin.io（免费，无需配置域名）
+ * -------------------------------------------------------------------------
+ * 原理：页面数据除了写入本地 localStorage/IndexedDB，还会同步到 JSONBin
+ * 云端的私有 Bin（一个 JSON 容器）。任何设备/浏览器启用本功能后都读写
+ * 同一个 Bin，从而实现多平台共享。JSONBin CORS 全开放，无需任何控制台配置。
+ *
+ * 首次使用（一次性配置，约 3 分钟）：
+ *  1. 打开 https://jsonbin.io 用邮箱注册（免费，无需实名）
+ *  2. 登录后点「Create Bin」：名称随意（如 research-workspace），
+ *     内容填 {} 并保存 —— 记下地址栏里的 Bin ID（形如 63ab12cd...）
+ *  3. 顶部菜单「API Keys」→ 复制 Master Key（X-Master-Key）
+ *  4. 回到本页面：侧栏「☁️ 云同步」→ 填 Bin ID + Master Key → 启用
+ *
+ * 之后每次保存数据会自动上传（防抖 1.5s），本机每 10 秒轮询云端一次，
+ * 其他设备一改动，本机自动拉取合并。冲突按 updatedAt 新者胜，被覆盖的
+ * 旧数据自动备份到本地 localStorage（保留 5 份）。
+ * ========================================================================= */
+(function(){
+  'use strict';
+  var CS_CFG_KEY='wb_jsonbin_cfg_v1';
+  var CS_BACKUP_PREFIX='wb_research_workspace_backup_';
+  var PUSH_DEBOUNCE=1500;   // 本地保存后延迟推送（防抖）
+  var POLL_INTERVAL=10000;  // 轮询间隔：10 秒
+  var API_BASE='https://api.jsonbin.io/v3/b';
+
+  /* ---------- 基础工具 ---------- */
+  function getCfg(){
+    try{ var c=JSON.parse(localStorage.getItem(CS_CFG_KEY)); return c&&typeof c==='object'?c:{} }catch(e){ return {} }
+  }
+  function saveCfg(c){
+    try{ localStorage.setItem(CS_CFG_KEY, JSON.stringify(c)) }catch(e){}
+  }
+  function deviceId(){
+    var K='wb_device_id', id=null;
+    try{ id=localStorage.getItem(K) }catch(e){}
+    if(!id){
+      id='dev-'+Math.random().toString(36).slice(2,10)+'-'+Date.now().toString(36);
+      try{ localStorage.setItem(K,id) }catch(e){}
+    }
+    return id;
+  }
+  function backupLocal(st){
+    try{
+      if(!st) return;
+      var key=CS_BACKUP_PREFIX+new Date().toISOString().slice(0,10).replace(/-/g,'')+'_'+Date.now().toString(36);
+      localStorage.setItem(key, JSON.stringify(st));
+      var keys=[];
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k && k.indexOf(CS_BACKUP_PREFIX)===0) keys.push(k);
+      }
+      keys.sort();
+      while(keys.length>5){ localStorage.removeItem(keys.shift()) }
+    }catch(e){}
+  }
+  function getLocalState(){ return (typeof window.state!=='undefined')?window.state:null }
+  function callSave(){ try{ window.saveState() }catch(e){} }
+  // 静默保存：写入本地存储但不更新时间戳、不触发云推送（用于应用远端数据，防止回声循环）
+  function silentSave(){
+    try{
+      window.__csSilent=true;
+      window.saveState();
+      if(CloudSync.authed){ CloudSync.setBadge('cloud') }
+    }catch(e){}
+    finally{ window.__csSilent=false }
+  }
+  function callRender(){ try{ window.render() }catch(e){} }
+  function toast(msg,type){
+    try{ window.showToast(msg,type||'') }catch(e){}
+  }
+
+  /* ---------- JSONBin API 封装 ---------- */
+  function apiHeaders(c){
+    var h={'Content-Type':'application/json'};
+    if(c&&c.apiKey){ h['X-Master-Key']=c.apiKey }
+    return h;
+  }
+  // 读取 Bin 内容；bin 不存在返回 {__empty:true}
+  async function fetchRemote(){
+    var c=getCfg();
+    if(!c.binId) return null;
+    var r=await fetch(API_BASE+'/'+encodeURIComponent(c.binId)+'/latest', { headers:apiHeaders(c) });
+    if(r.status===404){ return { __empty:true } }
+    if(!r.ok){
+      var t=''; try{ t=await r.text() }catch(e){}
+      throw new Error('HTTP '+r.status+(t?' '+t.slice(0,140):''));
+    }
+    var j=await r.json();
+    return (j && j.record!==undefined) ? j.record : null;
+  }
+  // 写入 Bin（整体覆盖）
+  async function pushRemote(st){
+    var c=getCfg();
+    if(!c.binId) throw new Error('未配置 Bin ID');
+    var r=await fetch(API_BASE+'/'+encodeURIComponent(c.binId), {
+      method:'PUT',
+      headers:apiHeaders(c),
+      body:JSON.stringify(st)
+    });
+    if(!r.ok){
+      var t=''; try{ t=await r.text() }catch(e){}
+      throw new Error('HTTP '+r.status+(t?' '+t.slice(0,140):''));
+    }
+    return true;
+  }
+
+  /* ---------- 云同步主对象 ---------- */
+  var CloudSync={
+    cfg:null,
+    running:false, authed:false, inited:false,
+    pollTimer:null, pushTimer:null,
+    lastPushTs:0, lastPushBy:'',
+    syncError:'', lastSyncAt:0, lastSyncErr:'',
+
+    /* 启动：由页面加载完成后调用（幂等） */
+    start:function(){
+      if(this.running) return;
+      this.running=true;
+      this.cfg=getCfg();
+      if(!this.cfg.binId || !this.cfg.apiKey || this.cfg.enabled===false){
+        this.setBadge('local');
+        return;
+      }
+      var self=this;
+      this.setBadge('connecting');
+      this.authed=true;
+      this.pullAndMerge().then(function(){
+        self.inited=true;
+        self.setBadge('cloud');
+        self.startPoll();
+      }).catch(function(err){
+        console.error('[CloudSync] start error', err);
+        self.inited=false;
+        self.syncError=(err&&err.message)?err.message:String(err);
+        self.lastSyncErr=self.syncError;
+        self.setBadge('error');
+      });
+    },
+
+    /* 拉取云端 Bin 并与本地合并（updatedAt 新者胜） */
+    async pullAndMerge(){
+      var self=this;
+      var remote=null;
+      try{ remote=await fetchRemote() }catch(e){ throw e }
+      if(!remote || remote.__empty){
+        // 云端为空 → 上传本地
+        await self.pushNow();
+        self.lastSyncAt=Date.now();
+        return;
+      }
+      var local=getLocalState();
+      var ct=remote.updatedAt||0, lt=local&&local.updatedAt||0;
+      if(ct>lt){
+        // 云端更新 → 备份本地旧数据后采用云端（静默保存，不触发回推）
+        if(!remote.updatedAt){ remote.updatedAt=Date.now() }
+        backupLocal(local);
+        window.state=remote;
+        silentSave(); callRender();
+        self.lastSyncAt=Date.now();
+        toast('已从云端拉取最新数据');
+      }else if(lt>ct){
+        // 本地更新 → 推送到云端
+        await self.pushNow();
+        self.lastSyncAt=Date.now();
+      }else{
+        // 时间戳相同 → 内容对比，不同则推送本地（覆盖云端）
+        if(JSON.stringify(remote)!==JSON.stringify(local||{})){
+          await self.pushNow();
+        }
+        self.lastSyncAt=Date.now();
+      }
+    },
+
+    /* 推送本地状态到云端（整体覆盖 Bin） */
+    async pushNow(){
+      var self=this;
+      if(!self.authed) return;
+      var st=getLocalState();
+      if(!st || !st.updatedAt){
+        callSave(); // 确保有时间戳
+        st=getLocalState();
+      }
+      if(!st) return;
+      var by=deviceId();
+      st=JSON.parse(JSON.stringify(st));
+      await pushRemote(st);
+      self.lastPushTs=st.updatedAt||0;
+      self.lastPushBy=by;
+      self.lastSyncAt=Date.now();
+      self.lastSyncErr='';
+    },
+
+    /* 本地保存后的云推送（防抖） */
+    onLocalSave:function(){
+      var self=this;
+      if(!self.authed) return;
+      if(self.cfg && self.cfg.autoSync===false) return;
+      clearTimeout(self.pushTimer);
+      self.pushTimer=setTimeout(function(){
+        self.pushNow().catch(function(err){
+          console.error('[CloudSync] push error', err);
+          self.syncError=(err&&err.message)?err.message:String(err);
+          self.lastSyncErr=self.syncError;
+          self.setBadge('error');
+        });
+      }, PUSH_DEBOUNCE);
+    },
+
+    /* 轮询：每 10 秒静默拉取一次，发现其他设备新数据才应用 */
+    startPoll:function(){
+      var self=this;
+      if(self.pollTimer) return;
+      self.pollTimer=setInterval(function(){ self.pollOnce() }, POLL_INTERVAL);
+    },
+    stopPoll:function(){
+      if(this.pollTimer){ clearInterval(this.pollTimer); this.pollTimer=null }
+    },
+    async pollOnce(){
+      if(!this.authed) return;
+      try{
+        var remote=await fetchRemote();
+        if(!remote || remote.__empty) return;
+        var local=getLocalState();
+        var ct=remote.updatedAt||0, lt=local&&local.updatedAt||0;
+        if(ct<=lt) return; // 没有更新的数据（含自己推送的回声）
+        if(!remote.updatedAt){ remote.updatedAt=ct }
+        backupLocal(local);
+        window.state=remote;
+        silentSave(); callRender();
+        this.lastSyncAt=Date.now();
+        toast('检测到其他设备更新，已同步');
+      }catch(e){ /* 轮询失败静默，不打扰用户 */ }
+    },
+
+    /* ---------- 状态徽章 ---------- */
+    setBadge:function(mode){
+      var dot=document.getElementById('syncDot');
+      var txt=document.getElementById('syncText');
+      if(!dot||!txt) return;
+      var text,color;
+      switch(mode){
+        case 'cloud': text='已云同步'; color='var(--green)'; break;
+        case 'connecting': text='云同步中…'; color='var(--amber)'; break;
+        case 'local': text='本地存储'; color='var(--blue)'; break;
+        case 'error': text='云同步异常'; color='var(--red)'; break;
+        default: return;
+      }
+      dot.style.background=color;
+      txt.textContent=text;
+    },
+
+    /* ---------- 设置面板 ---------- */
+    ensurePanel:function(){
+      var self=this;
+      if(document.getElementById('csPanel')) return;
+      var css=document.createElement('style');
+      css.textContent=
+        '.cs-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}'+
+        '.cs-overlay.show{display:flex}'+
+        '.cs-panel{background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.18);width:100%;max-width:420px;max-height:88vh;overflow-y:auto;padding:20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1e293b}'+
+        '.cs-panel h3{margin:0 0 4px;font-size:17px;color:#0f766e}'+
+        '.cs-sub{font-size:12px;color:#64748b;margin-bottom:14px}'+
+        '.cs-status{margin-bottom:14px}'+
+        '.cs-status .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:6px}'+
+        '.cs-status .line{font-size:12px;color:#64748b;margin-top:4px;word-break:break-all}'+
+        '.cs-status .err{color:#dc2626;word-break:break-all}'+
+        '.cs-field{display:block;font-size:12px;color:#475569;margin:12px 0 4px;font-weight:600}'+
+        '.cs-panel input[type=text]{width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px}'+
+        '.cs-panel input[type=text]:focus{outline:none;border-color:#0d9488;box-shadow:0 0 0 3px rgba(13,148,136,.12)}'+
+        '.cs-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}'+
+        '.cs-btn{flex:1;min-width:110px;padding:9px 12px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit}'+
+        '.cs-btn-main{background:#0d9488;color:#fff}.cs-btn-main:hover{background:#0f766e}'+
+        '.cs-btn-ghost{background:#f1f5f9;color:#475569}.cs-btn-ghost:hover{background:#e2e8f0}'+
+        '.cs-btn-danger{background:#fee2e2;color:#dc2626}.cs-btn-danger:hover{background:#fecaca}'+
+        '.cs-check{display:flex;align-items:center;gap:6px;font-size:12px;color:#475569;margin-top:12px;cursor:pointer}'+
+        '.cs-check input{width:auto}'+
+        '.cs-help{margin-top:14px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}'+
+        '.cs-help summary{padding:9px 12px;font-size:12px;font-weight:600;color:#0f766e;cursor:pointer;background:#f8fafc}'+
+        '.cs-help ol{padding:8px 12px 12px 28px;margin:0;font-size:12px;color:#475569;line-height:1.8}'+
+        '.cs-help code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:11px}'+
+        '.cs-foot{margin-top:14px;display:flex;justify-content:flex-end}'+
+        '.cs-foot button{border:none;background:#f1f5f9;color:#475569;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}';
+      document.head.appendChild(css);
+      var panel=document.createElement('div');
+      panel.className='cs-overlay';
+      panel.id='csPanel';
+      panel.onclick=function(e){ if(e.target===panel) self.closePanel() };
+      panel.innerHTML=
+        '<div class="cs-panel">'+
+          '<h3>☁️ 云同步设置</h3>'+
+          '<div class="cs-sub">多平台数据共享：电脑 / 手机 / 不同浏览器读写同一份云端数据（基于 JSONBin.io 免费服务）</div>'+
+          '<div class="cs-status">'+
+            '<span class="tag" id="csStatusTag" style="background:#f1f5f9;color:#64748b">未启用</span>'+
+            '<div class="line" id="csStatusDetail">填入 Bin ID 和 Master Key 并启用后生效</div>'+
+            '<div class="line err" id="csStatusErr" style="display:none"></div>'+
+          '</div>'+
+          '<label class="cs-field" for="csBinId">Bin ID</label>'+
+          '<input type="text" id="csBinId" placeholder="例如 63ab12cd..." autocomplete="off">'+
+          '<label class="cs-field" for="csApiKey">Master Key（API Key）</label>'+
+          '<input type="text" id="csApiKey" placeholder="粘贴 jsonbin.io 的 Master Key" autocomplete="off">'+
+          '<div class="cs-row">'+
+            '<button class="cs-btn cs-btn-main" id="csEnableBtn" onclick="CloudSync.toggle()">启用云同步</button>'+
+            '<button class="cs-btn cs-btn-ghost" id="csSyncNowBtn" onclick="CloudSync.syncNow()">立即同步</button>'+
+          '</div>'+
+          '<label class="cs-check"><input type="checkbox" id="csAutoSync" checked> 自动同步（保存后自动上传，每 10 秒接收其他设备变更）</label>'+
+          '<div class="cs-help"><details>'+
+            '<summary>首次使用教程（一次性配置，约 3 分钟，全程免费）</summary>'+
+            '<ol>'+
+              '<li>打开 <code>jsonbin.io</code>，用邮箱注册（免费，无需实名）</li>'+
+              '<li>登录后点 <strong>Create Bin</strong>：名称随意（如 research-workspace），内容填 <code>{}</code>，点 Save</li>'+
+              '<li>保存后从地址栏复制 <strong>Bin ID</strong>（形如 <code>63ab12cd...</code>）填入上方</li>'+
+              '<li>顶部菜单 <code>API Keys</code> → 复制 <strong>Master Key</strong> 填入上方</li>'+
+              '<li>点「启用云同步」，顶部徽章变为绿色「已云同步」即成功</li>'+
+              '<li>其他设备打开同一页面、填入相同 Bin ID 与 Key，即可互通数据</li>'+
+            '</ol>'+
+          '</details></div>'+
+          '<div class="cs-foot"><button onclick="CloudSync.closePanel()">关闭</button></div>'+
+        '</div>';
+      document.body.appendChild(panel);
+      this.bindPanel();
+    },
+    bindPanel:function(){
+      var self=this;
+      document.getElementById('csBinId').addEventListener('keydown',function(e){
+        if(e.key==='Enter') self.toggle();
+      });
+      document.getElementById('csApiKey').addEventListener('keydown',function(e){
+        if(e.key==='Enter') self.toggle();
+      });
+      document.getElementById('csAutoSync').addEventListener('change',function(){
+        self.cfg=self.cfg||getCfg();
+        self.cfg.autoSync=this.checked;
+        saveCfg(self.cfg);
+      });
+    },
+    openPanel:function(){
+      this.ensurePanel();
+      var self=this;
+      var c=getCfg();
+      document.getElementById('csBinId').value=c.binId||'';
+      document.getElementById('csApiKey').value=c.apiKey||'';
+      document.getElementById('csAutoSync').checked=c.autoSync!==false;
+      var btn=document.getElementById('csEnableBtn');
+      var tag=document.getElementById('csStatusTag');
+      var detail=document.getElementById('csStatusDetail');
+      var err=document.getElementById('csStatusErr');
+      if(c.enabled && this.inited){
+        btn.textContent='停用云同步';
+        btn.className='cs-btn cs-btn-danger';
+        tag.textContent='已启用';
+        tag.style.background='#dcfce7'; tag.style.color='#16a34a';
+        detail.textContent='Bin：'+c.binId;
+        if(this.lastSyncAt){ detail.textContent+=' ｜ 最近同步：'+new Date(this.lastSyncAt).toLocaleString() }
+      }else if(c.enabled){
+        btn.textContent='重新连接';
+        btn.className='cs-btn cs-btn-main';
+        tag.textContent='连接中/失败';
+        tag.style.background='#fef3c7'; tag.style.color='#d97706';
+        detail.textContent='Bin：'+c.binId;
+      }else{
+        btn.textContent='启用云同步';
+        btn.className='cs-btn cs-btn-main';
+        tag.textContent='未启用';
+        tag.style.background='#f1f5f9'; tag.style.color='#64748b';
+        detail.textContent='填入 Bin ID 和 Master Key 并启用后生效';
+      }
+      err.style.display=(this.lastSyncErr||this.syncError)?'block':'none';
+      err.textContent=(this.lastSyncErr||this.syncError)||'';
+      document.getElementById('csPanel').classList.add('show');
+    },
+    closePanel:function(){
+      var p=document.getElementById('csPanel');
+      if(p) p.classList.remove('show');
+    },
+    toggle:function(){
+      var self=this;
+      var c=getCfg();
+      if(c.enabled && this.inited){
+        // 停用
+        c.enabled=false;
+        saveCfg(c);
+        this.cfg=c;
+        this.stopPoll();
+        this.authed=false; this.inited=false;
+        this.setBadge('local');
+        toast('云同步已停用，当前为本地存储');
+        this.openPanel();
+        return;
+      }
+      var binId=(document.getElementById('csBinId').value||'').trim();
+      var apiKey=(document.getElementById('csApiKey').value||'').trim();
+      if(!binId){ toast('请先填写 Bin ID','error'); document.getElementById('csBinId').focus(); return }
+      if(!apiKey){ toast('请先填写 Master Key','error'); document.getElementById('csApiKey').focus(); return }
+      c.binId=binId; c.apiKey=apiKey;
+      c.autoSync=document.getElementById('csAutoSync').checked;
+      c.enabled=true;
+      saveCfg(c);
+      this.cfg=c;
+      this.syncError=''; this.lastSyncErr='';
+      this.setBadge('connecting');
+      this.authed=true;
+      this.pullAndMerge().then(function(){
+        self.inited=true;
+        self.setBadge('cloud');
+        self.startPoll();
+        toast('云同步已启用');
+        self.openPanel();
+      }).catch(function(err){
+        console.error('[CloudSync] toggle error', err);
+        self.inited=false;
+        self.syncError=(err&&err.message)?err.message:String(err);
+        self.lastSyncErr=self.syncError;
+        self.setBadge('error');
+        self.openPanel();
+        toast('云同步启用失败，请检查 Bin ID 和 Key','error');
+      });
+    },
+    syncNow:function(){
+      var self=this;
+      if(!this.authed){ toast('云同步未启用','error'); return }
+      this.setBadge('connecting');
+      this.pullAndMerge().then(function(){
+        self.setBadge('cloud');
+        toast('同步完成');
+      }).catch(function(err){
+        console.error('[CloudSync] syncNow error', err);
+        self.syncError=(err&&err.message)?err.message:String(err);
+        self.lastSyncErr=self.syncError;
+        self.setBadge('error');
+        toast('同步失败','error');
+      });
+    }
+  };
+
+  /* 挂载到全局（供按钮/徽章调用） */
+  window.CloudSync=CloudSync;
+
+  /* 接管 saveState：本地保存后自动触发云推送，并让徽章优先显示云状态
+     （静默模式除外——应用云端数据时不推送，避免回声循环） */
+  var __origSave=window.saveState;
+  if(typeof __origSave==='function'){
+    window.saveState=function(){
+      var r=__origSave.apply(null,arguments);
+      try{
+        if(!window.__csSilent){
+          if(CloudSync.authed){ CloudSync.setBadge('cloud') }
+          CloudSync.onLocalSave();
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  /* 等待页面主状态加载完成后再启动云同步（最多等 30s） */
+  var tries=0;
+  (function waitReady(){
+    if(window.state && window.storageOK!==undefined && window.render){
+      CloudSync.start();
+      return;
+    }
+    if(++tries<60){ setTimeout(waitReady,500) }
+  })();
+})();
+</script>
+</body>
+</html>
