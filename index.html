@@ -1197,467 +1197,369 @@ init();
 </script>
 <script>
 /* =========================================================================
- * 云同步模块（多平台数据共享）——基于 JSONBin.io（免费，无需配置域名）
+ * 云同步模块（多平台数据共享）——基于 Firebase
  * -------------------------------------------------------------------------
- * 原理：页面数据除了写入本地 localStorage/IndexedDB，还会同步到 JSONBin
- * 云端的私有 Bin（一个 JSON 容器）。任何设备/浏览器启用本功能后都读写
- * 同一个 Bin，从而实现多平台共享。JSONBin CORS 全开放，无需任何控制台配置。
+ * 原理：页面数据除写入本地 localStorage/IndexedDB，还会同步到 Firebase
+ * Cloud Firestore。任何设备/浏览器打开同一页面都读写同一文档，实现多
+ * 平台数据共享。Firebase SDK 已通过 CDN 内嵌，无需手动安装。
  *
- * 首次使用（一次性配置，约 3 分钟）：
- *  1. 打开 https://jsonbin.io 用邮箱注册（免费，无需实名）
- *  2. 登录后点「Create Bin」：名称随意（如 research-workspace），
- *     内容填 {} 并保存 —— 记下地址栏里的 Bin ID（形如 63ab12cd...）
- *  3. 顶部菜单「API Keys」→ 复制 Master Key（X-Master-Key）
- *  4. 回到本页面：侧栏「☁️ 云同步」→ 填 Bin ID + Master Key → 启用
+ * 首次使用（云端配置，约 3 分钟）：
+ *  1. Authentication → Sign-in method → 启用「Anonymous」（匿名登录）
+ *  2. Firestore Database → 创建数据库 → 选择「测试模式」允许读写；
+ *     或生产模式规则：match /sync_states/{doc} { allow read, write: if true; }
  *
- * 之后每次保存数据会自动上传（防抖 1.5s），本机每 10 秒轮询云端一次，
- * 其他设备一改动，本机自动拉取合并。冲突按 updatedAt 新者胜，被覆盖的
- * 旧数据自动备份到本地 localStorage（保留 5 份）。
- * ========================================================================= */
+ * 之后：打开页面即自动登录并同步，无需任何页面内配置。
+ * ======================================================================== */
 (function(){
   'use strict';
-  var CS_CFG_KEY='wb_jsonbin_cfg_v1';
-  var CS_BACKUP_PREFIX='wb_research_workspace_backup_';
-  var PUSH_DEBOUNCE=1500;   // 本地保存后延迟推送（防抖）
-  var POLL_INTERVAL=10000;  // 轮询间隔：10 秒
-  var API_BASE='https://api.jsonbin.io/v3/b';
 
-  /* ---------- 基础工具 ---------- */
-  function getCfg(){
-    try{ var c=JSON.parse(localStorage.getItem(CS_CFG_KEY)); return c&&typeof c==='object'?c:{} }catch(e){ return {} }
-  }
-  function saveCfg(c){
-    try{ localStorage.setItem(CS_CFG_KEY, JSON.stringify(c)) }catch(e){}
-  }
-  function deviceId(){
-    var K='wb_device_id', id=null;
-    try{ id=localStorage.getItem(K) }catch(e){}
-    if(!id){
-      id='dev-'+Math.random().toString(36).slice(2,10)+'-'+Date.now().toString(36);
-      try{ localStorage.setItem(K,id) }catch(e){}
-    }
-    return id;
-  }
-  function backupLocal(st){
-    try{
-      if(!st) return;
-      var key=CS_BACKUP_PREFIX+new Date().toISOString().slice(0,10).replace(/-/g,'')+'_'+Date.now().toString(36);
-      localStorage.setItem(key, JSON.stringify(st));
-      var keys=[];
-      for(var i=0;i<localStorage.length;i++){
-        var k=localStorage.key(i);
-        if(k && k.indexOf(CS_BACKUP_PREFIX)===0) keys.push(k);
-      }
-      keys.sort();
-      while(keys.length>5){ localStorage.removeItem(keys.shift()) }
-    }catch(e){}
-  }
-  function getLocalState(){ return (typeof window.state!=='undefined')?window.state:null }
-  function callSave(){ try{ window.saveState() }catch(e){} }
-  // 静默保存：写入本地存储但不更新时间戳、不触发云推送（用于应用远端数据，防止回声循环）
-  function silentSave(){
-    try{
-      window.__csSilent=true;
-      window.saveState();
-      if(CloudSync.authed){ CloudSync.setBadge('cloud') }
-    }catch(e){}
-    finally{ window.__csSilent=false }
-  }
-  function callRender(){ try{ window.render() }catch(e){} }
-  function toast(msg,type){
-    try{ window.showToast(msg,type||'') }catch(e){}
-  }
-
-  /* ---------- JSONBin API 封装 ---------- */
-  function apiHeaders(c){
-    var h={'Content-Type':'application/json'};
-    if(c&&c.apiKey){ h['X-Master-Key']=c.apiKey }
-    return h;
-  }
-  // 读取 Bin 内容；bin 不存在返回 {__empty:true}
-  async function fetchRemote(){
-    var c=getCfg();
-    if(!c.binId) return null;
-    var r=await fetch(API_BASE+'/'+encodeURIComponent(c.binId)+'/latest', { headers:apiHeaders(c) });
-    if(r.status===404){ return { __empty:true } }
-    if(!r.ok){
-      var t=''; try{ t=await r.text() }catch(e){}
-      throw new Error('HTTP '+r.status+(t?' '+t.slice(0,140):''));
-    }
-    var j=await r.json();
-    return (j && j.record!==undefined) ? j.record : null;
-  }
-  // 写入 Bin（整体覆盖）
-  async function pushRemote(st){
-    var c=getCfg();
-    if(!c.binId) throw new Error('未配置 Bin ID');
-    var r=await fetch(API_BASE+'/'+encodeURIComponent(c.binId), {
-      method:'PUT',
-      headers:apiHeaders(c),
-      body:JSON.stringify(st)
-    });
-    if(!r.ok){
-      var t=''; try{ t=await r.text() }catch(e){}
-      throw new Error('HTTP '+r.status+(t?' '+t.slice(0,140):''));
-    }
-    return true;
-  }
-
-  /* ---------- 云同步主对象 ---------- */
-  var CloudSync={
-    cfg:null,
-    running:false, authed:false, inited:false,
-    pollTimer:null, pushTimer:null,
-    lastPushTs:0, lastPushBy:'',
-    syncError:'', lastSyncAt:0, lastSyncErr:'',
-
-    /* 启动：由页面加载完成后调用（幂等） */
-    start:function(){
-      if(this.running) return;
-      this.running=true;
-      this.cfg=getCfg();
-      if(!this.cfg.binId || !this.cfg.apiKey || this.cfg.enabled===false){
-        this.setBadge('local');
-        return;
-      }
-      var self=this;
-      this.setBadge('connecting');
-      this.authed=true;
-      this.pullAndMerge().then(function(){
-        self.inited=true;
-        self.setBadge('cloud');
-        self.startPoll();
-      }).catch(function(err){
-        console.error('[CloudSync] start error', err);
-        self.inited=false;
-        self.syncError=(err&&err.message)?err.message:String(err);
-        self.lastSyncErr=self.syncError;
-        self.setBadge('error');
-      });
-    },
-
-    /* 拉取云端 Bin 并与本地合并（updatedAt 新者胜） */
-    async pullAndMerge(){
-      var self=this;
-      var remote=null;
-      try{ remote=await fetchRemote() }catch(e){ throw e }
-      if(!remote || remote.__empty){
-        // 云端为空 → 上传本地
-        await self.pushNow();
-        self.lastSyncAt=Date.now();
-        return;
-      }
-      var local=getLocalState();
-      var ct=remote.updatedAt||0, lt=local&&local.updatedAt||0;
-      if(ct>lt){
-        // 云端更新 → 备份本地旧数据后采用云端（静默保存，不触发回推）
-        if(!remote.updatedAt){ remote.updatedAt=Date.now() }
-        backupLocal(local);
-        window.state=remote;
-        silentSave(); callRender();
-        self.lastSyncAt=Date.now();
-        toast('已从云端拉取最新数据');
-      }else if(lt>ct){
-        // 本地更新 → 推送到云端
-        await self.pushNow();
-        self.lastSyncAt=Date.now();
-      }else{
-        // 时间戳相同 → 内容对比，不同则推送本地（覆盖云端）
-        if(JSON.stringify(remote)!==JSON.stringify(local||{})){
-          await self.pushNow();
-        }
-        self.lastSyncAt=Date.now();
-      }
-    },
-
-    /* 推送本地状态到云端（整体覆盖 Bin） */
-    async pushNow(){
-      var self=this;
-      if(!self.authed) return;
-      var st=getLocalState();
-      if(!st || !st.updatedAt){
-        callSave(); // 确保有时间戳
-        st=getLocalState();
-      }
-      if(!st) return;
-      var by=deviceId();
-      st=JSON.parse(JSON.stringify(st));
-      await pushRemote(st);
-      self.lastPushTs=st.updatedAt||0;
-      self.lastPushBy=by;
-      self.lastSyncAt=Date.now();
-      self.lastSyncErr='';
-    },
-
-    /* 本地保存后的云推送（防抖） */
-    onLocalSave:function(){
-      var self=this;
-      if(!self.authed) return;
-      if(self.cfg && self.cfg.autoSync===false) return;
-      clearTimeout(self.pushTimer);
-      self.pushTimer=setTimeout(function(){
-        self.pushNow().catch(function(err){
-          console.error('[CloudSync] push error', err);
-          self.syncError=(err&&err.message)?err.message:String(err);
-          self.lastSyncErr=self.syncError;
-          self.setBadge('error');
-        });
-      }, PUSH_DEBOUNCE);
-    },
-
-    /* 轮询：每 10 秒静默拉取一次，发现其他设备新数据才应用 */
-    startPoll:function(){
-      var self=this;
-      if(self.pollTimer) return;
-      self.pollTimer=setInterval(function(){ self.pollOnce() }, POLL_INTERVAL);
-    },
-    stopPoll:function(){
-      if(this.pollTimer){ clearInterval(this.pollTimer); this.pollTimer=null }
-    },
-    async pollOnce(){
-      if(!this.authed) return;
-      try{
-        var remote=await fetchRemote();
-        if(!remote || remote.__empty) return;
-        var local=getLocalState();
-        var ct=remote.updatedAt||0, lt=local&&local.updatedAt||0;
-        if(ct<=lt) return; // 没有更新的数据（含自己推送的回声）
-        if(!remote.updatedAt){ remote.updatedAt=ct }
-        backupLocal(local);
-        window.state=remote;
-        silentSave(); callRender();
-        this.lastSyncAt=Date.now();
-        toast('检测到其他设备更新，已同步');
-      }catch(e){ /* 轮询失败静默，不打扰用户 */ }
-    },
-
-    /* ---------- 状态徽章 ---------- */
-    setBadge:function(mode){
-      var dot=document.getElementById('syncDot');
-      var txt=document.getElementById('syncText');
-      if(!dot||!txt) return;
-      var text,color;
-      switch(mode){
-        case 'cloud': text='已云同步'; color='var(--green)'; break;
-        case 'connecting': text='云同步中…'; color='var(--amber)'; break;
-        case 'local': text='本地存储'; color='var(--blue)'; break;
-        case 'error': text='云同步异常'; color='var(--red)'; break;
-        default: return;
-      }
-      dot.style.background=color;
-      txt.textContent=text;
-    },
-
-    /* ---------- 设置面板 ---------- */
-    ensurePanel:function(){
-      var self=this;
-      if(document.getElementById('csPanel')) return;
-      var css=document.createElement('style');
-      css.textContent=
-        '.cs-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}'+
-        '.cs-overlay.show{display:flex}'+
-        '.cs-panel{background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.18);width:100%;max-width:420px;max-height:88vh;overflow-y:auto;padding:20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1e293b}'+
-        '.cs-panel h3{margin:0 0 4px;font-size:17px;color:#0f766e}'+
-        '.cs-sub{font-size:12px;color:#64748b;margin-bottom:14px}'+
-        '.cs-status{margin-bottom:14px}'+
-        '.cs-status .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:6px}'+
-        '.cs-status .line{font-size:12px;color:#64748b;margin-top:4px;word-break:break-all}'+
-        '.cs-status .err{color:#dc2626;word-break:break-all}'+
-        '.cs-field{display:block;font-size:12px;color:#475569;margin:12px 0 4px;font-weight:600}'+
-        '.cs-panel input[type=text]{width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px}'+
-        '.cs-panel input[type=text]:focus{outline:none;border-color:#0d9488;box-shadow:0 0 0 3px rgba(13,148,136,.12)}'+
-        '.cs-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}'+
-        '.cs-btn{flex:1;min-width:110px;padding:9px 12px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit}'+
-        '.cs-btn-main{background:#0d9488;color:#fff}.cs-btn-main:hover{background:#0f766e}'+
-        '.cs-btn-ghost{background:#f1f5f9;color:#475569}.cs-btn-ghost:hover{background:#e2e8f0}'+
-        '.cs-btn-danger{background:#fee2e2;color:#dc2626}.cs-btn-danger:hover{background:#fecaca}'+
-        '.cs-check{display:flex;align-items:center;gap:6px;font-size:12px;color:#475569;margin-top:12px;cursor:pointer}'+
-        '.cs-check input{width:auto}'+
-        '.cs-help{margin-top:14px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}'+
-        '.cs-help summary{padding:9px 12px;font-size:12px;font-weight:600;color:#0f766e;cursor:pointer;background:#f8fafc}'+
-        '.cs-help ol{padding:8px 12px 12px 28px;margin:0;font-size:12px;color:#475569;line-height:1.8}'+
-        '.cs-help code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:11px}'+
-        '.cs-foot{margin-top:14px;display:flex;justify-content:flex-end}'+
-        '.cs-foot button{border:none;background:#f1f5f9;color:#475569;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}';
-      document.head.appendChild(css);
-      var panel=document.createElement('div');
-      panel.className='cs-overlay';
-      panel.id='csPanel';
-      panel.onclick=function(e){ if(e.target===panel) self.closePanel() };
-      panel.innerHTML=
-        '<div class="cs-panel">'+
-          '<h3>☁️ 云同步设置</h3>'+
-          '<div class="cs-sub">多平台数据共享：电脑 / 手机 / 不同浏览器读写同一份云端数据（基于 JSONBin.io 免费服务）</div>'+
-          '<div class="cs-status">'+
-            '<span class="tag" id="csStatusTag" style="background:#f1f5f9;color:#64748b">未启用</span>'+
-            '<div class="line" id="csStatusDetail">填入 Bin ID 和 Master Key 并启用后生效</div>'+
-            '<div class="line err" id="csStatusErr" style="display:none"></div>'+
-          '</div>'+
-          '<label class="cs-field" for="csBinId">Bin ID</label>'+
-          '<input type="text" id="csBinId" placeholder="例如 63ab12cd..." autocomplete="off">'+
-          '<label class="cs-field" for="csApiKey">Master Key（API Key）</label>'+
-          '<input type="text" id="csApiKey" placeholder="粘贴 jsonbin.io 的 Master Key" autocomplete="off">'+
-          '<div class="cs-row">'+
-            '<button class="cs-btn cs-btn-main" id="csEnableBtn" onclick="CloudSync.toggle()">启用云同步</button>'+
-            '<button class="cs-btn cs-btn-ghost" id="csSyncNowBtn" onclick="CloudSync.syncNow()">立即同步</button>'+
-          '</div>'+
-          '<label class="cs-check"><input type="checkbox" id="csAutoSync" checked> 自动同步（保存后自动上传，每 10 秒接收其他设备变更）</label>'+
-          '<div class="cs-help"><details>'+
-            '<summary>首次使用教程（一次性配置，约 3 分钟，全程免费）</summary>'+
-            '<ol>'+
-              '<li>打开 <code>jsonbin.io</code>，用邮箱注册（免费，无需实名）</li>'+
-              '<li>登录后点 <strong>Create Bin</strong>：名称随意（如 research-workspace），内容填 <code>{}</code>，点 Save</li>'+
-              '<li>保存后从地址栏复制 <strong>Bin ID</strong>（形如 <code>63ab12cd...</code>）填入上方</li>'+
-              '<li>顶部菜单 <code>API Keys</code> → 复制 <strong>Master Key</strong> 填入上方</li>'+
-              '<li>点「启用云同步」，顶部徽章变为绿色「已云同步」即成功</li>'+
-              '<li>其他设备打开同一页面、填入相同 Bin ID 与 Key，即可互通数据</li>'+
-            '</ol>'+
-          '</details></div>'+
-          '<div class="cs-foot"><button onclick="CloudSync.closePanel()">关闭</button></div>'+
-        '</div>';
-      document.body.appendChild(panel);
-      this.bindPanel();
-    },
-    bindPanel:function(){
-      var self=this;
-      document.getElementById('csBinId').addEventListener('keydown',function(e){
-        if(e.key==='Enter') self.toggle();
-      });
-      document.getElementById('csApiKey').addEventListener('keydown',function(e){
-        if(e.key==='Enter') self.toggle();
-      });
-      document.getElementById('csAutoSync').addEventListener('change',function(){
-        self.cfg=self.cfg||getCfg();
-        self.cfg.autoSync=this.checked;
-        saveCfg(self.cfg);
-      });
-    },
-    openPanel:function(){
-      this.ensurePanel();
-      var self=this;
-      var c=getCfg();
-      document.getElementById('csBinId').value=c.binId||'';
-      document.getElementById('csApiKey').value=c.apiKey||'';
-      document.getElementById('csAutoSync').checked=c.autoSync!==false;
-      var btn=document.getElementById('csEnableBtn');
-      var tag=document.getElementById('csStatusTag');
-      var detail=document.getElementById('csStatusDetail');
-      var err=document.getElementById('csStatusErr');
-      if(c.enabled && this.inited){
-        btn.textContent='停用云同步';
-        btn.className='cs-btn cs-btn-danger';
-        tag.textContent='已启用';
-        tag.style.background='#dcfce7'; tag.style.color='#16a34a';
-        detail.textContent='Bin：'+c.binId;
-        if(this.lastSyncAt){ detail.textContent+=' ｜ 最近同步：'+new Date(this.lastSyncAt).toLocaleString() }
-      }else if(c.enabled){
-        btn.textContent='重新连接';
-        btn.className='cs-btn cs-btn-main';
-        tag.textContent='连接中/失败';
-        tag.style.background='#fef3c7'; tag.style.color='#d97706';
-        detail.textContent='Bin：'+c.binId;
-      }else{
-        btn.textContent='启用云同步';
-        btn.className='cs-btn cs-btn-main';
-        tag.textContent='未启用';
-        tag.style.background='#f1f5f9'; tag.style.color='#64748b';
-        detail.textContent='填入 Bin ID 和 Master Key 并启用后生效';
-      }
-      err.style.display=(this.lastSyncErr||this.syncError)?'block':'none';
-      err.textContent=(this.lastSyncErr||this.syncError)||'';
-      document.getElementById('csPanel').classList.add('show');
-    },
-    closePanel:function(){
-      var p=document.getElementById('csPanel');
-      if(p) p.classList.remove('show');
-    },
-    toggle:function(){
-      var self=this;
-      var c=getCfg();
-      if(c.enabled && this.inited){
-        // 停用
-        c.enabled=false;
-        saveCfg(c);
-        this.cfg=c;
-        this.stopPoll();
-        this.authed=false; this.inited=false;
-        this.setBadge('local');
-        toast('云同步已停用，当前为本地存储');
-        this.openPanel();
-        return;
-      }
-      var binId=(document.getElementById('csBinId').value||'').trim();
-      var apiKey=(document.getElementById('csApiKey').value||'').trim();
-      if(!binId){ toast('请先填写 Bin ID','error'); document.getElementById('csBinId').focus(); return }
-      if(!apiKey){ toast('请先填写 Master Key','error'); document.getElementById('csApiKey').focus(); return }
-      c.binId=binId; c.apiKey=apiKey;
-      c.autoSync=document.getElementById('csAutoSync').checked;
-      c.enabled=true;
-      saveCfg(c);
-      this.cfg=c;
-      this.syncError=''; this.lastSyncErr='';
-      this.setBadge('connecting');
-      this.authed=true;
-      this.pullAndMerge().then(function(){
-        self.inited=true;
-        self.setBadge('cloud');
-        self.startPoll();
-        toast('云同步已启用');
-        self.openPanel();
-      }).catch(function(err){
-        console.error('[CloudSync] toggle error', err);
-        self.inited=false;
-        self.syncError=(err&&err.message)?err.message:String(err);
-        self.lastSyncErr=self.syncError;
-        self.setBadge('error');
-        self.openPanel();
-        toast('云同步启用失败，请检查 Bin ID 和 Key','error');
-      });
-    },
-    syncNow:function(){
-      var self=this;
-      if(!this.authed){ toast('云同步未启用','error'); return }
-      this.setBadge('connecting');
-      this.pullAndMerge().then(function(){
-        self.setBadge('cloud');
-        toast('同步完成');
-      }).catch(function(err){
-        console.error('[CloudSync] syncNow error', err);
-        self.syncError=(err&&err.message)?err.message:String(err);
-        self.lastSyncErr=self.syncError;
-        self.setBadge('error');
-        toast('同步失败','error');
-      });
-    }
+  /* 你的 Firebase 配置 */
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAYfhIjJpBe4dqpoCPYNe_6cCUxv_nULko",
+    authDomain: "matrix-daily.firebaseapp.com",
+    projectId: "matrix-daily",
+    storageBucket: "matrix-daily.firebasestorage.app",
+    messagingSenderId: "516772885881",
+    appId: "1:516772885881:web:cd46503c737011ed7daba8",
+    measurementId: "G-26RY1RVWJ8"
   };
 
-  /* 挂载到全局（供按钮/徽章调用） */
-  window.CloudSync=CloudSync;
+  var self = {
+    status: 'idle',   // idle / loading / synced / error
+    authed: false,
+    lastSyncAt: 0,
+    lastPushTs: 0,
+    lastPushBy: '',
+    enabled: true
+  };
 
-  /* 接管 saveState：本地保存后自动触发云推送，并让徽章优先显示云状态
-     （静默模式除外——应用云端数据时不推送，避免回声循环） */
-  var __origSave=window.saveState;
-  if(typeof __origSave==='function'){
-    window.saveState=function(){
-      var r=__origSave.apply(null,arguments);
-      try{
-        if(!window.__csSilent){
-          if(CloudSync.authed){ CloudSync.setBadge('cloud') }
-          CloudSync.onLocalSave();
+  var app = null, auth = null, db = null, unsubscribe = null;
+  var pushTimer = null;
+  var deviceId = (function(){
+    try{
+      var k='wb_device_id';
+      var v=localStorage.getItem(k);
+      if(v) return v;
+      v='d_'+Math.random().toString(36).slice(2)+'_'+Date.now();
+      localStorage.setItem(k,v);
+      return v;
+    }catch(e){ return 'unknown_'+Date.now(); }
+  })();
+
+  /* ---------- 小工具 ---------- */
+  function loadScript(src, cb, err){
+    var s=document.createElement('script');
+    s.src=src; s.async=true;
+    s.onload=function(){ cb && cb(); };
+    s.onerror=function(){ err && err(new Error('加载失败: '+src)); };
+    document.head.appendChild(s);
+  }
+  function toast(msg, type){
+    try{ window.showToast && window.showToast(msg, type||'info'); }catch(e){}
+  }
+  function callRender(){ try{ window.render && window.render(); }catch(e){} }
+  function getLocalState(){ return (typeof window.state!=='undefined') ? window.state : null; }
+  function setLocalState(newState, silent){
+    if(!newState) return;
+    window.state = newState;
+    try{
+      if(silent){ window.__csSilent = true; }
+      window.saveState && window.saveState();
+      if(silent){ delete window.__csSilent; }
+    }catch(e){ if(silent){ try{ delete window.__csSilent; }catch(_){} } }
+  }
+  function backupLocal(local){
+    if(!local) return;
+    try{
+      var arr=JSON.parse(localStorage.getItem('wb_research_workspace_backups')||'[]');
+      arr.unshift({at:Date.now(), data:local});
+      arr=arr.slice(0,5);
+      localStorage.setItem('wb_research_workspace_backups', JSON.stringify(arr));
+    }catch(e){}
+  }
+  function setBadge(type){
+    try{
+      var dot=document.getElementById('syncDot'), txt=document.getElementById('syncText');
+      if(!dot || !txt) return;
+      dot.className='sync-dot';
+      if(type==='cloud'){ dot.classList.add('cloud'); txt.textContent='已云同步'; }
+      else if(type==='loading'){ dot.classList.add('loading'); txt.textContent='同步中…'; }
+      else if(type==='error'){ dot.classList.add('error'); txt.textContent='同步失败'; }
+      else if(type==='local'){ txt.textContent='本地模式'; }
+      else { txt.textContent='检测中'; }
+    }catch(e){}
+  }
+
+  /* ---------- Firebase 初始化 ---------- */
+  function start(){
+    if(!self.enabled) return;
+    if(self.status==='loading' || self.status==='synced') return;
+    self.status='loading';
+    setBadge('loading');
+
+    if(typeof window.firebase !== 'undefined'){
+      initApp();
+    } else {
+      var sdkUrl='https://www.gstatic.com/firebasejs/10.12.2/firebase-compat.js';
+      loadScript(sdkUrl, initApp, function(e){
+        self.status='error';
+        setBadge('error');
+        toast('Firebase SDK 加载失败，请检查网络能否访问 Google','error');
+      });
+    }
+  }
+
+  function initApp(){
+    try{
+      if(!firebase.apps.length){
+        firebase.initializeApp(FIREBASE_CONFIG);
+      }
+      app = firebase.app();
+      auth = firebase.auth();
+      db = firebase.firestore();
+    }catch(e){
+      self.status='error'; setBadge('error');
+      toast('Firebase 初始化失败：'+e.message,'error');
+      return;
+    }
+    signIn();
+  }
+
+  function signIn(){
+    if(!auth){ self.status='error'; setBadge('error'); return; }
+    auth.signInAnonymously().then(function(cred){
+      self.authed = true; self.status='synced'; setBadge('cloud');
+      pullAndMerge();
+      startWatch();
+    }).catch(function(err){
+      self.status='error'; setBadge('error');
+      var msg = err.message || '';
+      if(msg.indexOf('administrator')>-1 || err.code==='auth/admin-restricted-operation' || err.code==='auth/operation-not-allowed'){
+        toast('请在 Firebase 控制台开启「匿名登录(Anonymous)」','error');
+      } else {
+        toast('Firebase 登录失败：'+msg,'error');
+      }
+    });
+  }
+
+  /* ---------- 数据同步 ---------- */
+  function pullAndMerge(){
+    if(!db || !self.authed) return;
+    var local = getLocalState();
+    db.collection('sync_states').doc('main').get().then(function(doc){
+      if(!doc.exists){
+        // 云端无数据，推本地
+        pushNow();
+        return;
+      }
+      var d = doc.data() || {};
+      if(!d.updatedAt){ pushNow(); return; }
+      var cloudData = null;
+      try{ cloudData = JSON.parse(d.data); }catch(e){}
+      if(!cloudData){ pushNow(); return; }
+      var ct = cloudData.updatedAt || 0;
+      var lt = local && local.updatedAt || 0;
+      if(ct > lt){
+        backupLocal(local);
+        setLocalState(cloudData, true);
+        callRender();
+        self.lastSyncAt = Date.now();
+        self.lastPushTs = cloudData.updatedAt || 0;
+        self.lastPushBy = d.by || '';
+        toast('已从云端拉取最新数据');
+      } else if(lt > ct){
+        pushNow();
+      } else {
+        self.lastSyncAt = Date.now();
+      }
+    }).catch(function(e){
+      setBadge('error');
+      var msg = e.message || '';
+      if(msg.indexOf('Missing or insufficient permissions')>-1 || e.code==='permission-denied'){
+        toast('Firestore 权限不足，请检查数据库规则','error');
+      } else if(msg.indexOf('database was not found')>-1 || msg.indexOf('does not exist')>-1){
+        toast('请先创建 Firestore Database','error');
+      } else {
+        toast('拉取失败：'+msg,'error');
+      }
+    });
+  }
+
+  function pushNow(){
+    if(!db || !self.authed) return;
+    var s = getLocalState();
+    if(!s) return;
+    var payload = {
+      data: JSON.stringify(s),
+      updatedAt: s.updatedAt || Date.now(),
+      by: deviceId
+    };
+    self.lastPushTs = payload.updatedAt;
+    self.lastPushBy = deviceId;
+    db.collection('sync_states').doc('main').set(payload).then(function(){
+      self.lastSyncAt = Date.now();
+      setBadge('cloud');
+    }).catch(function(e){
+      setBadge('error');
+      var msg = e.message || '';
+      if(msg.indexOf('Missing or insufficient permissions')>-1 || e.code==='permission-denied'){
+        toast('同步失败：Firestore 规则未开放','error');
+      } else {
+        toast('同步失败：'+msg,'error');
+      }
+    });
+  }
+
+  function onLocalSave(){
+    if(!self.enabled || !self.authed) return;
+    if(pushTimer) clearTimeout(pushTimer);
+    pushTimer = setTimeout(function(){ pushNow(); }, 1500);
+  }
+
+  function startWatch(){
+    if(!db) return;
+    if(unsubscribe){ unsubscribe(); unsubscribe=null; }
+    unsubscribe = db.collection('sync_states').doc('main').onSnapshot(function(doc){
+      if(!doc.exists) return;
+      var d = doc.data() || {};
+      if(!d.updatedAt) return;
+      var remoteTs = d.updatedAt || 0;
+      // 回声防护：忽略自己刚推送的变更
+      if(d.by === deviceId && remoteTs <= self.lastPushTs + 1000) return;
+      var local = getLocalState();
+      if(remoteTs > (local && local.updatedAt || 0)){
+        var remote = null;
+        try{ remote = JSON.parse(d.data); }catch(e){}
+        if(remote){
+          backupLocal(local);
+          setLocalState(remote, true);
+          callRender();
+          self.lastSyncAt = Date.now();
+          toast('检测到其他设备更新，已同步');
         }
-      }catch(e){}
+      }
+    }, function(e){
+      // watch 失败不影响主流程
+    });
+  }
+
+  function syncNow(){ pullAndMerge(); pushNow(); }
+
+  /* ---------- 面板 UI ---------- */
+  function buildPanel(){
+    var div = document.createElement('div');
+    div.id = 'cloudSyncPanel';
+    div.className = 'cloud-sync-panel';
+    div.innerHTML = [
+      '<div class="csp-header"><h3>☁️ 云同步（Firebase）</h3><button class="csp-close" title="关闭">&times;</button></div>',
+      '<div class="csp-body">',
+        '<div class="csp-status">状态：<span id="cspStatus">'+(self.authed?'已连接':'初始化中…')+'</span></div>',
+        '<p class="csp-hint">配置已内置。只要 Firebase 控制台开启了匿名登录和 Firestore，打开页面即自动同步。</p>',
+        '<div class="csp-actions">',
+          '<button id="cspSyncNow" class="csp-btn primary">立即同步</button>',
+          '<button id="cspReconnect" class="csp-btn">重新连接</button>',
+        '</div>',
+        '<div class="csp-help">',
+          '<b>若同步失败请检查：</b>',
+          '<ol>',
+            '<li>Firebase 控制台 → Authentication → Sign-in method → Anonymous 已启用</li>',
+            '<li>Firebase 控制台 → Firestore Database → 已创建数据库，规则允许读写 /sync_states/{doc}</li>',
+          '</ol>',
+        '</div>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(div);
+
+    div.querySelector('.csp-close').onclick = closePanel;
+    div.querySelector('#cspSyncNow').onclick = function(){ syncNow(); closePanel(); };
+    div.querySelector('#cspReconnect').onclick = function(){ start(); };
+
+    div.addEventListener('click', function(e){ if(e.target===div) closePanel(); });
+    document.addEventListener('keydown', function esc(e){ if(e.key==='Escape') closePanel(); document.removeEventListener('keydown', esc); });
+  }
+  function openPanel(){
+    var p = document.getElementById('cloudSyncPanel');
+    if(!p){ buildPanel(); p=document.getElementById('cloudSyncPanel'); }
+    if(p) p.classList.add('open');
+    try{
+      var st=document.getElementById('cspStatus');
+      if(st) st.textContent = self.authed ? '已连接' : (self.status==='error'?'连接失败':'初始化中…');
+    }catch(e){}
+  }
+  function closePanel(){
+    var p=document.getElementById('cloudSyncPanel');
+    if(p) p.classList.remove('open');
+  }
+  function toggle(){ var p=document.getElementById('cloudSyncPanel'); if(p && p.classList.contains('open')) closePanel(); else openPanel(); }
+
+  /* ---------- 接管本地保存 ---------- */
+  var __origSave = window.saveState;
+  if(typeof __origSave==='function'){
+    window.saveState = function(){
+      var r = __origSave.apply(this, arguments);
+      try{ onLocalSave(); }catch(e){}
       return r;
     };
   }
 
-  /* 等待页面主状态加载完成后再启动云同步（最多等 30s） */
+  /* ---------- 对外接口 ---------- */
+  var CloudSync = {
+    start: start,
+    setBadge: setBadge,
+    openPanel: openPanel,
+    closePanel: closePanel,
+    toggle: toggle,
+    syncNow: syncNow,
+    onLocalSave: onLocalSave,
+    authed: false,
+    _self: self
+  };
+
+  /* 暴露全局 */
+  window.CloudSync = CloudSync;
+
+  /* 绑定顶栏/侧栏按钮事件 */
+  function bindButtons(){
+    var sb=document.getElementById('syncBadge');
+    if(sb && !sb._csBound){ sb._csBound=true; sb.style.cursor='pointer'; sb.onclick=function(){ toggle(); }; }
+    var cb=document.getElementById('cloudSyncBtn');
+    if(cb && !cb._csBound){ cb._csBound=true; cb.onclick=function(){ toggle(); }; }
+  }
+
+  /* 样式注入 */
+  (function injectStyles(){
+    if(document.getElementById('cs-firebase-styles')) return;
+    var css = document.createElement('style');
+    css.id='cs-firebase-styles';
+    css.textContent = [
+      '.cloud-sync-panel{position:fixed;right:-420px;top:0;width:420px;max-width:100%;height:100%;background:#fff;box-shadow:-5px 0 25px rgba(0,0,0,.15);z-index:10001;transition:right .25s;display:flex;flex-direction:column;font-size:14px}',
+      '.cloud-sync-panel.open{right:0}',
+      '.csp-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #eee;background:#fafafa}',
+      '.csp-header h3{margin:0;font-size:16px;font-weight:600;color:#333}',
+      '.csp-close{background:none;border:none;font-size:22px;cursor:pointer;color:#666;line-height:1}',
+      '.csp-body{padding:20px;flex:1;overflow:auto}',
+      '.csp-status{margin-bottom:12px;color:#333;font-weight:500}',
+      '.csp-status span{color:#22c55e}',
+      '.csp-hint{color:#666;line-height:1.6;margin-bottom:16px}',
+      '.csp-actions{display:flex;gap:10px;margin-bottom:20px}',
+      '.csp-btn{flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-size:13px}',
+      '.csp-btn.primary{background:#2563eb;color:#fff;border-color:#2563eb}',
+      '.csp-help{ background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px;color:#4b5563;font-size:12px;line-height:1.6}',
+      '.csp-help ol{margin:8px 0 0 16px;padding:0}',
+      '.csp-help li{margin-bottom:4px}'
+    ].join('');
+    document.head.appendChild(css);
+  })();
+
+  /* 页面加载后自动启动 */
   var tries=0;
   (function waitReady(){
     if(window.state && window.storageOK!==undefined && window.render){
-      CloudSync.start();
+      bindButtons();
+      start();
       return;
     }
-    if(++tries<60){ setTimeout(waitReady,500) }
+    if(++tries<60){ setTimeout(waitReady, 500); }
   })();
 })();
 </script>
