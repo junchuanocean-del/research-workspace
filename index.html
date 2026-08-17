@@ -1258,10 +1258,18 @@ init();
     try{ window.showToast && window.showToast(msg, type||'info'); }catch(e){}
   }
   function callRender(){ try{ window.render && window.render(); }catch(e){} }
-  function getLocalState(){ return (typeof window.state!=='undefined') ? window.state : null; }
+  /* 注意：主脚本用 let 声明 state/storageOK，不会挂到 window 上，
+     必须直接访问全局词法绑定（跨 script 共享），而非 window.state */
+  function getLocalState(){
+    try{
+      if(typeof state!=='undefined' && state) return state;
+      if(typeof window.state!=='undefined' && window.state) return window.state;
+    }catch(e){}
+    return null;
+  }
   function setLocalState(newState, silent){
     if(!newState) return;
-    window.state = newState;
+    try{ state = newState; }catch(e){ window.state = newState; }
     try{
       if(silent){ window.__csSilent = true; }
       window.saveState && window.saveState();
@@ -1551,10 +1559,17 @@ init();
     document.head.appendChild(css);
   })();
 
-  /* 页面加载后自动启动 */
+  /* 页面加载后自动启动（state/storageOK 是主脚本的 let 全局绑定，不挂 window，直接按标识符访问） */
   var tries=0;
   (function waitReady(){
-    if(window.state && window.storageOK!==undefined && window.render){
+    var stateReady=false;
+    try{ stateReady = (typeof state!=='undefined') && !!state; }catch(e){ stateReady=false; }
+    if(!stateReady){ stateReady = !!(window.state); }
+    var storageReady=false;
+    try{ storageReady = (typeof storageOK!=='undefined'); }catch(e){ storageReady=(window.storageOK!==undefined); }
+    var renderReady=false;
+    try{ renderReady = (typeof render==='function') || (window.render && typeof window.render==='function'); }catch(e){}
+    if(stateReady && storageReady && renderReady){
       bindButtons();
       start();
       return;
