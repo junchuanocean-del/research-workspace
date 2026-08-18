@@ -386,7 +386,11 @@ async function idbSet(key,val){
 // Save — writes to localStorage AND IndexedDB (dual write)
 function saveState(){
   // 静默模式（__csSilent 由云同步模块设置）：应用云端数据时不更新时间戳、不触发云推送
-  if(!window.__csSilent){state.updatedAt=Date.now();}
+  if(!window.__csSilent){
+    state.updatedAt=Date.now();
+    // 用户真实编辑后，数据即视为「真实数据」，清除示例标记，避免示例数据污染云端
+    if(state.settings){ state.settings.isSample=false; }
+  }
   const data=JSON.stringify(state);
   let lsOK=false;
   try{localStorage.setItem(STORAGE_KEY,data);lsOK=true;storageType='localStorage';storageOK=true}catch(e){}
@@ -1176,10 +1180,11 @@ function init(){
       state=generateSampleData();
       state.updatedAt=0; // 初始示例数据时间戳置 0：标记为非权威，绝不在合并时覆盖云端真实数据
     }
-    // 首次加载的本地保存只写本地、不触发云端推送（避免示例数据被推上云覆盖真实数据）
-    window.__csNoPush=true;
+    // 首次加载的本地保存：静默写入——保持示例标记与时间戳 0、且不触发云端推送，
+    // 避免示例数据被盖成 now 时间戳后误覆盖云端真实数据
+    window.__csSilent=true;
     saveState();
-    window.__csNoPush=false;
+    window.__csSilent=false;
     finishInit();
   });
 }
@@ -1358,24 +1363,35 @@ init();
   function pullAndMerge(){
     if(!db || !self.authed) return;
     var local = getLocalState();
+    var localIsSample = !!(local && local.settings && local.settings.isSample);
     db.collection('sync_states').doc('main').get().then(function(doc){
       if(!doc.exists){
-        // 云端无数据，推本地
-        pushNow();
+        // 云端为空：仅当本地已是真实数据时才上传；示例数据不抢占云端（保持为空，等待真实数据）
+        if(!localIsSample) pushNow();
         return;
       }
       var d = doc.data() || {};
-      if(!d.updatedAt){ pushNow(); return; }
+      if(!d.updatedAt){ if(!localIsSample) pushNow(); return; }
       var cloudData = null;
       try{ cloudData = JSON.parse(d.data); }catch(e){}
-      if(!cloudData){ pushNow(); return; }
-      // 真实数据优先于示例数据：若云端是示例而本地是真实数据，用本地真实数据覆盖云端（防示例污染）
+      if(!cloudData){ if(!localIsSample) pushNow(); return; }
       var cloudIsSample = !!(cloudData.settings && cloudData.settings.isSample);
-      var localIsSample = !!(local && local.settings && local.settings.isSample);
+      // 恢复：云端是示例、本地是真实 → 用本地真实数据覆盖云端
       if(cloudIsSample && !localIsSample){
         backupLocal(local);
         pushNow();
         toast('检测到云端为示例数据，已用本地真实数据覆盖');
+        return;
+      }
+      // 云端是真实、本地是示例 → 直接采用云端真实数据（不再把示例推上去）
+      if(!cloudIsSample && localIsSample){
+        backupLocal(local);
+        setLocalState(cloudData, true);
+        callRender();
+        self.lastSyncAt = Date.now();
+        self.lastPushTs = cloudData.updatedAt || 0;
+        self.lastPushBy = d.by || '';
+        toast('已从云端拉取最新数据');
         return;
       }
       var ct = cloudData.updatedAt || 0;
@@ -1406,10 +1422,8 @@ init();
     });
   }
 
-  function pushNow(){
+  function _doPush(s){
     if(!db || !self.authed) return;
-    var s = getLocalState();
-    if(!s) return;
     var payload = {
       data: JSON.stringify(s),
       updatedAt: s.updatedAt || Date.now(),
@@ -1429,6 +1443,30 @@ init();
         toast('同步失败：'+msg,'error');
       }
     });
+  }
+
+  function pushNow(){
+    if(!db || !self.authed) return;
+    var s = getLocalState();
+    if(!s) return;
+    // 安全护栏：绝不让「示例数据」覆盖云端已有的「真实数据」
+    var localIsSample = !!(s.settings && s.settings.isSample);
+    if(localIsSample){
+      // 先读云端：仅当云端为空或为示例数据时，才允许上传示例；否则跳过，避免污染真实数据
+      db.collection('sync_states').doc('main').get().then(function(doc){
+        if(doc.exists){
+          var cd=null; try{ cd=JSON.parse((doc.data()||{}).data||'null'); }catch(e){}
+          var cloudReal = !(cd && cd.settings && cd.settings.isSample);
+          if(cloudReal){
+            toast('云端已有真实数据，已跳过本次示例数据上传','info');
+            return;
+          }
+        }
+        _doPush(s);
+      }).catch(function(){ _doPush(s); });
+      return;
+    }
+    _doPush(s);
   }
 
   function onLocalSave(){
@@ -1497,7 +1535,11 @@ init();
     div.querySelector('.csp-close').onclick = closePanel;
     div.querySelector('#cspSyncNow').onclick = function(){ syncNow(); closePanel(); };
     div.querySelector('#cspReconnect').onclick = function(){ start(); };
-    div.querySelector('#cspForcePush').onclick = function(){ pushNow(); toast('已强制上传本地数据到云端'); };
+    div.querySelector('#cspForcePush').onclick = function(){
+      var s=getLocalState();
+      if(s && s.settings && s.settings.isSample){ pushNow(); toast('当前为示例数据：云端已有真实数据时不会被覆盖','info'); }
+      else { pushNow(); toast('已强制上传本地数据到云端'); }
+    };
 
     div.addEventListener('click', function(e){ if(e.target===div) closePanel(); });
     document.addEventListener('keydown', function esc(e){ if(e.key==='Escape') closePanel(); document.removeEventListener('keydown', esc); });
