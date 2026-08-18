@@ -1369,6 +1369,15 @@ init();
       var cloudData = null;
       try{ cloudData = JSON.parse(d.data); }catch(e){}
       if(!cloudData){ pushNow(); return; }
+      // 真实数据优先于示例数据：若云端是示例而本地是真实数据，用本地真实数据覆盖云端（防示例污染）
+      var cloudIsSample = !!(cloudData.settings && cloudData.settings.isSample);
+      var localIsSample = !!(local && local.settings && local.settings.isSample);
+      if(cloudIsSample && !localIsSample){
+        backupLocal(local);
+        pushNow();
+        toast('检测到云端为示例数据，已用本地真实数据覆盖');
+        return;
+      }
       var ct = cloudData.updatedAt || 0;
       var lt = local && local.updatedAt || 0;
       if(ct > lt){
