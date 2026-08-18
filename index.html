@@ -1174,8 +1174,12 @@ function init(){
       storageType=src;storageOK=true;
     }else{
       state=generateSampleData();
+      state.updatedAt=0; // 初始示例数据时间戳置 0：标记为非权威，绝不在合并时覆盖云端真实数据
     }
-    saveState(); // dual-write loaded/new data to both backends
+    // 首次加载的本地保存只写本地、不触发云端推送（避免示例数据被推上云覆盖真实数据）
+    window.__csNoPush=true;
+    saveState();
+    window.__csNoPush=false;
     finishInit();
   });
 }
@@ -1467,6 +1471,9 @@ init();
           '<button id="cspSyncNow" class="csp-btn primary">立即同步</button>',
           '<button id="cspReconnect" class="csp-btn">重新连接</button>',
         '</div>',
+        '<div class="csp-actions">',
+          '<button id="cspForcePush" class="csp-btn" style="border-color:#f59e0b;color:#b45309">强制上传本地数据</button>',
+        '</div>',
         '<div class="csp-help">',
           '<b>若同步失败请检查：</b>',
           '<ol>',
@@ -1481,6 +1488,7 @@ init();
     div.querySelector('.csp-close').onclick = closePanel;
     div.querySelector('#cspSyncNow').onclick = function(){ syncNow(); closePanel(); };
     div.querySelector('#cspReconnect').onclick = function(){ start(); };
+    div.querySelector('#cspForcePush').onclick = function(){ pushNow(); toast('已强制上传本地数据到云端'); };
 
     div.addEventListener('click', function(e){ if(e.target===div) closePanel(); });
     document.addEventListener('keydown', function esc(e){ if(e.key==='Escape') closePanel(); document.removeEventListener('keydown', esc); });
@@ -1505,7 +1513,8 @@ init();
   if(typeof __origSave==='function'){
     window.saveState = function(){
       var r = __origSave.apply(this, arguments);
-      try{ onLocalSave(); }catch(e){}
+      // 静默保存（应用云端数据）或首次加载保存时，不触发云端推送，避免回声与示例数据覆盖
+      try{ if(!window.__csSilent && !window.__csNoPush) onLocalSave(); }catch(e){}
       return r;
     };
   }
